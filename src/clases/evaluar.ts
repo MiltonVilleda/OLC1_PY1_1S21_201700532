@@ -1,9 +1,11 @@
 export default class evaluar {
-    public resultado : number;
-    constructor (resultado : number){
-        this.resultado = resultado
+    public resultado: any;
+
+    constructor(resultado: any) {
+        this.resultado = resultado;
     }
-    get_resultado():number {
+
+    get_Resultado(): number {
         return this.resultado;
     }
 }

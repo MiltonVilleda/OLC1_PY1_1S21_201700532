@@ -13,10 +13,10 @@ num     [0-9]+
 "//".*              {/* Ignoro los comentarios simples */}
 
 /* Simbolos del programa */
-"*"                   { console.log("Reconocio : "+ yytext); return 'MULTI'}
-"/"                   { console.log("Reconocio : "+ yytext); return 'DIV'}
-"-"                   { console.log("Reconocio : "+ yytext); return 'RESTA'}
-"++"                    { console.log("Reconocio : "+ yytext); return 'INCRE'}
+"*"                    { console.log("Reconocio : "+ yytext); return 'MULTI'}
+"/"                    { console.log("Reconocio : "+ yytext); return 'DIV'}
+"-"                    { console.log("Reconocio : "+ yytext); return 'RESTA'}
+"++"                   { console.log("Reconocio : "+ yytext); return 'INCRE'}
 "+"                    { console.log("Reconocio : "+ yytext); return 'SUMA'}
 "("                    { console.log("Reconocio : "+ yytext); return 'PARA'}
 ")"                    { console.log("Reconocio : "+ yytext); return 'PARC'}
