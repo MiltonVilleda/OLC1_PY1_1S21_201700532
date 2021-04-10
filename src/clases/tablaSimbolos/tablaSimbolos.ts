@@ -8,4 +8,41 @@ export class tablaSimbolos {
         this.ant = ant;
         this.tabla = new Map<string, simbolos>();
     }
+
+    agregar(id: string, simbolo: simbolos){
+        this.tabla.set(id.toLowerCase(), simbolo);
+    }
+
+    existe(id: string): boolean{
+        let ts: tablaSimbolos = this;
+        while (ts != null){
+            let existe = ts.tabla.get(id);
+            if (existe != null){
+                return true;
+            }
+            ts = ts.ant;
+        }
+        return false;
+    }
+
+    existeAtual(id: string): boolean{
+        let ts: tablaSimbolos = this;
+        let existe = ts.tabla.get(id);
+        if (existe != null){
+            return false;
+        }
+        return true;
+    }
+
+    getSimbolo(id: string){
+        let ts: tablaSimbolos = this;
+        while (ts != null){
+            let existe = ts.tabla.get(id);
+            if (existe != null){
+                return existe;
+            }
+            ts = ts.ant;
+        }
+        return null;
+    }
 }

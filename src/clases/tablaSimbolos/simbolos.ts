@@ -1,5 +1,5 @@
+import { ThrowStmt } from "@angular/compiler";
 import tipo from "./tipo";
-
 export default class simbolos {
     public simbolo: number;
     //Variables
@@ -11,6 +11,15 @@ export default class simbolos {
     public metodo: boolean;
 
     constructor(simbolo: number, tipo: tipo, identificador: string, valor: any, lista_param?, metodo?) {
-        // TODO: asignacion
+        this.simbolo = simbolo;
+        this.tipo = tipo;
+        this.identificador = identificador;
+        this.valor = valor;
+        this.lista_param = lista_param;
+        this.metodo = metodo;
+    }
+
+    setValor(valor): void{
+        this.valor = valor;
     }
 }

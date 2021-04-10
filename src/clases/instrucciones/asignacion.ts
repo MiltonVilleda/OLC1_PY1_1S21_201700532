@@ -6,18 +6,26 @@ import { tablaSimbolos } from "../tablaSimbolos/tablaSimbolos";
 
 export default class asignacion implements instruccion{
     public identificador: string;
-    public exp: expresion;
+    public valor: expresion;
     public linea: number;
     public columna: number;
 
-    constructor(identificador, exp, linea, columna){
+    constructor(identificador, valor, linea, columna){
         this.identificador = identificador;
-        this.exp = exp;
+        this.valor = valor;
         this.linea = linea;
         this.columna = columna;
     }
     ejecutar(controlador: controlador, ts: tablaSimbolos) {
-        throw new Error("Method not implemented.");
+        if (ts.existe(this.identificador)){
+            let valor = this.valor.getValor(controlador,ts);
+
+            // TODO: verificar si son del mismo tipo
+
+            ts.getSimbolo(this.identificador).setValor(valor);
+        } else {
+            // TODO: reportar el error, no existe la variable
+        }
     }
     recorrer(): nodo {
         throw new Error("Method not implemented.");

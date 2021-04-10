@@ -19,9 +19,15 @@ export class AppComponent {
 
     this.consola = ""
     let ana = new analizador.analizador();
+
+    if (this.contenido != ""){
+      let ejecutar = ana.ejecutar(this.contenido);
+      this.consola = ejecutar.consola;
+      document.getElementById("").innerHTML = ejecutar.ts;
+    }
+    /*
     let ts = new tablaSimbolos(null);
     let cont = new controlador();
-
     if (this.contenido != "") {
       let arreglo: Array<evaluar> = ana.ejecutar(this.contenido);
       for (let num of arreglo) {
@@ -31,5 +37,6 @@ export class AppComponent {
         //Evaluar[10+11];
       }
     }
+    */
   }
 }
