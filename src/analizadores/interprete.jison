@@ -100,6 +100,12 @@ caracter    (\'({escape}|{aceptacion2})*\')
     const asignacion = require('../clases/instrucciones/asignacion');
     const simbolos = require('../clases/tablaSimbolos/simbolos');
     const tipo = require('../clases/tablaSimbolos/Tipo');
+
+    const identificador = require('../clases/expresiones/identificador')
+    const ternario = require('../clases/expresiones/ternario')
+    const print = require('../clases/instrucciones/print')
+    const if_ = require('../clases/instrucciones/sentenciasControl/if_')
+    const while_ = require('../clases/instrucciones/sentenciasCiclica/while_')
 %}
 
 /* Precedencia de operadores */
@@ -135,15 +141,15 @@ instruccion : declaracion       { $$ = $1; }
             | sent_while        { $$ = $1; }
             ;
 
-sent_if : IF PARA e PARC LLAVEA instrucciones LLAVEC
-        | IF PARA e PARC LLAVEA instrucciones LLAVEC ELSE LLAVEA instrucciones LLAVEC
-        | IF PARA e PARC LLAVEA instrucciones LLAVEC ELSE sent_if
+sent_if : IF PARA e PARC LLAVEA instrucciones LLAVEC        { $$ = new if_.default($3,$6,[],@1.first_line,@1.last_column) }
+        | IF PARA e PARC LLAVEA instrucciones LLAVEC ELSE LLAVEA instrucciones LLAVEC  { $$ = new if_.default($3,$6,$10,@1.first_line,@1.last_column) }
+        | IF PARA e PARC LLAVEA instrucciones LLAVEC ELSE sent_if       { $$ = new if_.default($3,$6,[$9],@1.first_line,@1.last_column) }
         ;
 
-sent_while : WHILE PARA e PARC LLAVEA instrucciones LLAVEC
+sent_while : WHILE PARA e PARC LLAVEA instrucciones LLAVEC      { $$ = new while_.default($3,$6,@1.first_line,@1.last_column) }
             ;
 
-print : PRINT PARA e PARC PYC       {  }
+print : PRINT PARA e PARC PYC       { $$ = new print.default($3,@1.first_line,@1.last_column) }
             ;
 
 declaracion : tipo lista_simbolos PYC       {$$ = new declaracion.default($1,$2,@1.first_line,@1.first_column); }
@@ -188,8 +194,8 @@ e : e MAS e { $$ = new aritmetica.default($1,'+', $3, $1.first_line, $1.last_col
     | CHAR { $1 = $1.slice(1, $1.length-1); $$ = new primitivo.default($1, $1.first_line, $1.last_column); }
     | TRUE { $$ = new primitivo.default(true, $1.first_line, $1.last_column); }
     | FALSE { $$ = new primitivo.default(false, $1.first_line, $1.last_column); }
-    | ID
-    | e INTERROGAC e DOSPTN e
+    | ID { $$ = new identificador.default($1,@1.first_line,@1.last_column) }
+    | e INTERROGAC e DOSPTN e { $$ = new ternario.default($1,$3,$5,@1.first_line,@1.last_column) }
     ;
 
 /*

@@ -25,16 +25,13 @@ export default class asignacion implements instruccion {
             let variable = ts.getSimbolo(this.identificador);
             let tipo_var = this.getTipo_(valor);
             let tipo_ = variable.tipo.type;
-            console.log("VALOR: " + valor);
-            console.log("TIPO VAL: " + tipo_var)
-            console.log("TIPO VAR: " + tipo_)
-            if (tipo_ == tipo_var || (tipo_ == tipo.CARACTER && tipo_var == tipo.CADENA) || (tipo_ == tipo.DOUBLE && tipo_var == tipo.ENTERO && valor.lenght == 1)){
+            if (tipo_ == tipo_var || (tipo_ == tipo.CARACTER && tipo_var == tipo.CADENA && valor.lenght == 1) || (tipo_ == tipo.DOUBLE && tipo_var == tipo.ENTERO)){
                 console.log("ASIGNACION, TIPO IGUAL");
                 ts.getSimbolo(this.identificador).setValor(valor);
             } else {
                 let error = new errores('Semantico', `La variable ${variable.identificador} no es compatible con el valor ${valor}`, this.linea, this.columna);
                 controlador.errores.push(error);
-                controlador.appEnd(`Error semantico: La variable ${variable.identificador} no es compatible con el valor ${valor}. Error en la linea ${this.linea} en la columna ${this.columna}`);
+                controlador.appEnd(`Error semantico en la linea ${this.linea} en la columna ${this.columna}: La variable ${variable.identificador} no es compatible con el valor ${valor}`);
             }
         } else {
             let error = new errores('Semantico', `La variable ${this.identificador} no ha sido declarada`, this.linea, this.columna);
