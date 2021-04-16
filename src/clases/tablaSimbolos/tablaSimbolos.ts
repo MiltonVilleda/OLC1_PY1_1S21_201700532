@@ -29,9 +29,9 @@ export class tablaSimbolos {
         let ts: tablaSimbolos = this;
         let existe = ts.tabla.get(id);
         if (existe != null){
-            return false;
+            return true;
         }
-        return true;
+        return false;
     }
 
     getSimbolo(id: string){

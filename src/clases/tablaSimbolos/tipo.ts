@@ -20,7 +20,7 @@ export default class Tipo {
             return tipo.ENTERO
         } else if (stype == 'STRING'){
             return tipo.CADENA
-        } else if (stype == 'CARACTER'){
+        } else if (stype == 'CHAR'){
             return tipo.CARACTER
         } else if (stype == 'BOOLEAN'){
             return tipo.BOOLEANO

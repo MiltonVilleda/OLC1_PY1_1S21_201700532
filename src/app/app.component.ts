@@ -20,10 +20,12 @@ export class AppComponent {
     this.consola = ""
     let ana = new analizador.analizador();
 
-    if (this.contenido != ""){
+    if (this.contenido != "") {
       let ejecutar = ana.ejecutar(this.contenido);
       this.consola = ejecutar.consola;
-      document.getElementById("").innerHTML = ejecutar.ts;
+      //this.tablaS = ejecutar.ts.tabla;
+      console.log(ejecutar.ts.tabla);
+      //document.getElementById("").innerHTML = ejecutar.ts;
     }
     /*
     let ts = new tablaSimbolos(null);

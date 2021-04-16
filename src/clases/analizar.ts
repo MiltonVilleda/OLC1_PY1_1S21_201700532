@@ -1,4 +1,5 @@
 //import * as sintactico from '../analizadores/gramatica';
+import { ControlContainer } from '@angular/forms';
 import * as interprete from '../analizadores/interprete';
 import controlador from './controlador';
 import { tablaSimbolos } from './tablaSimbolos/tablaSimbolos';
@@ -12,11 +13,11 @@ export class analizador{
             let controlador_ = new controlador();
             let ts_global = new tablaSimbolos(null);
             ast.ejecutar(controlador_,ts_global);
-            let retorno = { "Errores:" : controlador_.errores, "Consola:" : controlador_.consola }
+            let retorno = { "errores" : controlador_.errores, "consola" : controlador_.consola, "ts" : ts_global }
             return retorno;
         }catch(error){
-            console.log("Error al analizar")
-            console.log(error)
+            console.log("Error al analizar");
+            console.log(error);
             return error
         }
     }

@@ -18,6 +18,8 @@ export default class aritmetica extends operacion implements expresion {
 
         if (typeof valor === 'number') {
             return tipo.DOUBLE;
+        } else if (typeof valor === 'string' && valor.length == 1) {
+            return tipo.CARACTER;
         } else if (typeof valor === 'string') {
             return tipo.CADENA;
         } else if (typeof valor === 'boolean') {

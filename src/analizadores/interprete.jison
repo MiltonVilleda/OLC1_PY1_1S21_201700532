@@ -26,8 +26,12 @@ caracter    (\'({escape}|{aceptacion2})*\')
 ")"                    { console.log("Reconocio : "+ yytext); return 'PARC'}
 "["                    { console.log("Reconocio : "+ yytext); return 'CORA'}
 "]"                    { console.log("Reconocio : "+ yytext); return 'CORC'}
+"{"                    { console.log("Reconocio : "+ yytext); return 'LLAVEA'}
+"}"                    { console.log("Reconocio : "+ yytext); return 'LLAVEC'}
 ";"                    { console.log("Reconocio : "+ yytext); return 'PYC'}
 ","                    { console.log("Reconocio : "+ yytext); return 'COMA'}
+"?"                    { console.log("Reconocio : "+ yytext); return 'INTERROGAC'}
+":"                    { console.log("Reconocio : "+ yytext); return 'DOSPTN'}
 
 /* Operadores Aritmeticos */
 "+"                    { console.log("Reconocio : "+ yytext); return 'MAS'}
@@ -58,7 +62,12 @@ caracter    (\'({escape}|{aceptacion2})*\')
 "int"               { console.log("Reconocio : "+ yytext); return 'INT'}
 "double"               { console.log("Reconocio : "+ yytext); return 'DOUBLE'}
 "string"               { console.log("Reconocio : "+ yytext); return 'STRING'}
+"char"               { console.log("Reconocio : "+ yytext); return 'CHAR'}
 "boolean"               { console.log("Reconocio : "+ yytext); return 'BOOLEAN'}
+"print"               { console.log("Reconocio : "+ yytext); return 'PRINT'}
+"if"               { console.log("Reconocio : "+ yytext); return 'IF'}
+"else"               { console.log("Reconocio : "+ yytext); return 'ELSE'}
+"while"               { console.log("Reconocio : "+ yytext); return 'WHILE'}
 
 /* SIMBOLOS ER */
 [0-9]+("."[0-9]+)?\b  { console.log("Reconocio : "+ yytext); return 'DECIMAL'}
@@ -95,7 +104,7 @@ caracter    (\'({escape}|{aceptacion2})*\')
 
 /* Precedencia de operadores */
 
-//%left 'OR'
+%right 'INTERROGAC'
 %left 'OR'
 %left 'AND'
 %right 'NOT'
@@ -112,7 +121,7 @@ caracter    (\'({escape}|{aceptacion2})*\')
 
 
 inicio
-    : instrucciones EOF { Console.log($1); $$ = new ast.default($1);  return $$; }
+    : instrucciones EOF { console.log($1); $$ = new ast.default($1);  return $$; }
     ;
 
 instrucciones : instrucciones instruccion   { $$ = $1; $$.push($2); }
@@ -121,6 +130,20 @@ instrucciones : instrucciones instruccion   { $$ = $1; $$.push($2); }
 
 instruccion : declaracion       { $$ = $1; }
             | asignacion        { $$ = $1; }
+            | print             { $$ = $1; }
+            | sent_if           { $$ = $1; }
+            | sent_while        { $$ = $1; }
+            ;
+
+sent_if : IF PARA e PARC LLAVEA instrucciones LLAVEC
+        | IF PARA e PARC LLAVEA instrucciones LLAVEC ELSE LLAVEA instrucciones LLAVEC
+        | IF PARA e PARC LLAVEA instrucciones LLAVEC ELSE sent_if
+        ;
+
+sent_while : WHILE PARA e PARC LLAVEA instrucciones LLAVEC
+            ;
+
+print : PRINT PARA e PARC PYC       {  }
             ;
 
 declaracion : tipo lista_simbolos PYC       {$$ = new declaracion.default($1,$2,@1.first_line,@1.first_column); }
@@ -131,9 +154,9 @@ asignacion : ID IGUAL e PYC     { $$ = new asignacion.default($1,$3,@1.first_lin
 
 tipo : INT      { $$ = new tipo.default('ENTERO'); }
     | DOUBLE    { $$ = new tipo.default('DOUBLE'); }
-    | STRING    { $$ = new tipo.default($1); }
-    | CHAR      { $$ = new tipo.default($1); }
-    | BOOLEAN   { $$ = new tipo.default($1); }
+    | STRING    { $$ = new tipo.default('STRING'); }
+    | CHAR      { $$ = new tipo.default('CHAR'); }
+    | BOOLEAN   { $$ = new tipo.default('BOOLEAN'); }
     ;
 
 lista_simbolos : lista_simbolos COMA ID                 { $$ = $1; $$.push(new simbolos.default(1,null,$3,null)); }
@@ -165,6 +188,8 @@ e : e MAS e { $$ = new aritmetica.default($1,'+', $3, $1.first_line, $1.last_col
     | CHAR { $1 = $1.slice(1, $1.length-1); $$ = new primitivo.default($1, $1.first_line, $1.last_column); }
     | TRUE { $$ = new primitivo.default(true, $1.first_line, $1.last_column); }
     | FALSE { $$ = new primitivo.default(false, $1.first_line, $1.last_column); }
+    | ID
+    | e INTERROGAC e DOSPTN e
     ;
 
 /*
