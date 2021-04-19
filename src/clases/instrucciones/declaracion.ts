@@ -35,7 +35,7 @@ export default class declaracion implements instruccion {
                 let valor = variable.valor.getValor(controlador, ts);
                 let tipo_ = variable.valor.getTipo(controlador,ts);
                 if (tipo_ == this.type.type || (tipo_ == tipo.CARACTER && this.type.type == tipo.CADENA && valor.lenght == 1) || (tipo_ == tipo.DOUBLE && this.type.type == tipo.ENTERO)){
-                    let newSimbolo = new simbolos(variable.simbolo, this.type, variable.identificador, valor);
+                    let newSimbolo = new simbolos(variable.simbolo, this.type, variable.identificador, valor, this.linea, this.columna);
                     ts.agregar(variable.identificador, newSimbolo);
                 } else {
                     let error = new errores('Semantico', `La variable ${variable.identificador} no es compatible con el valor ${valor}`, this.linea, this.columna);
@@ -43,7 +43,7 @@ export default class declaracion implements instruccion {
                     controlador.appEnd(`Error semantico en la linea ${this.linea} en la columna ${this.columna}: La variable ${variable.identificador} no es compatible con el valor ${valor}`);
                 }
             } else {
-                let newSimbolo = new simbolos(variable.simbolo, this.type, variable.identificador, null);
+                let newSimbolo = new simbolos(variable.simbolo, this.type, variable.identificador, null, this.linea, this.columna);
                 ts.agregar(variable.identificador, newSimbolo);
             }
         }

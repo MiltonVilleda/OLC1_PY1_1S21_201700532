@@ -1,9 +1,7 @@
-import { areAllEquivalent } from '@angular/compiler/src/output/output_ast';
 import { Component } from '@angular/core';
-import evaluar from '../clases/evaluar';
 import * as analizador from '../clases/analizar'
-import { tablaSimbolos } from '../clases/tablaSimbolos/tablaSimbolos';
-import controlador from '../clases/controlador';
+import simbolos from 'src/clases/tablaSimbolos/simbolos';
+import { simbolo } from 'src/clases/interfaces/simbolo';
 
 @Component({
   selector: 'app-root',
@@ -14,17 +12,20 @@ export class AppComponent {
 
   contenido: string = "";
   consola: string = "";
+  tabla_map: Map<string, simbolos>
+  tabla2: Array<simbolo>
 
   ejecutar(): void {
-
+    this.tabla2 = new Array<simbolo>()
     this.consola = ""
     let ana = new analizador.analizador();
 
     if (this.contenido != "") {
       let ejecutar = ana.ejecutar(this.contenido);
       this.consola = ejecutar.consola;
-      //this.tablaS = ejecutar.ts.tabla;
-      console.log(ejecutar.ts.tabla);
+      this.tabla2 = ejecutar.ts
+      console.log("X"+this.tabla2+"X")
+      //console.log(this.tabla2)
       //document.getElementById("").innerHTML = ejecutar.ts;
     }
     /*

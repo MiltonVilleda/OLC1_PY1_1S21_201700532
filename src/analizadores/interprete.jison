@@ -68,6 +68,8 @@ caracter    (\'({escape}|{aceptacion2})*\')
 "if"               { console.log("Reconocio : "+ yytext); return 'IF'}
 "else"               { console.log("Reconocio : "+ yytext); return 'ELSE'}
 "while"               { console.log("Reconocio : "+ yytext); return 'WHILE'}
+"void"               { console.log("Reconocio : "+ yytext); return 'VOID'}
+"exec"               { console.log("Reconocio : "+ yytext); return 'EXEC'}
 
 /* SIMBOLOS ER */
 [0-9]+("."[0-9]+)?\b  { console.log("Reconocio : "+ yytext); return 'DECIMAL'}
@@ -106,6 +108,10 @@ caracter    (\'({escape}|{aceptacion2})*\')
     const print = require('../clases/instrucciones/print')
     const if_ = require('../clases/instrucciones/sentenciasControl/if_')
     const while_ = require('../clases/instrucciones/sentenciasCiclica/while_')
+
+    const funcion = require('../clases/instrucciones/funcion')
+    const llamada = require('../clases/instrucciones/llamada')
+    const exec = require('../clases/instrucciones/exec')
 %}
 
 /* Precedencia de operadores */
@@ -139,6 +145,9 @@ instruccion : declaracion       { $$ = $1; }
             | print             { $$ = $1; }
             | sent_if           { $$ = $1; }
             | sent_while        { $$ = $1; }
+            | funciones         { $$ = $1; }
+            | llamada PYC       { $$ = $1; }
+            | EXEC llamada PYC       { $$ = new exec.default($2,@1.first_line,@1.last_column) }
             ;
 
 sent_if : IF PARA e PARC LLAVEA instrucciones LLAVEC        { $$ = new if_.default($3,$6,[],@1.first_line,@1.last_column) }
@@ -150,6 +159,22 @@ sent_while : WHILE PARA e PARC LLAVEA instrucciones LLAVEC      { $$ = new while
             ;
 
 print : PRINT PARA e PARC PYC       { $$ = new print.default($3,@1.first_line,@1.last_column) }
+            ;
+
+funciones : VOID ID PARA PARC LLAVEA instrucciones LLAVEC       { $$ = new funcion.default(3,new tipo.default('VOID'),$2,null,[],true,$6,@1.first_line,@1.last_column); }
+            | VOID ID PARA lista_parametros PARC LLAVEA instrucciones LLAVEC { $$ = new funcion.default(3,new tipo.default('VOID'),$2,$4,true,$7,@1.first_line,@1.last_column); }
+            ;
+
+lista_parametros : lista_parametros COMA tipo ID        { $$ = $1; $$.push(new simbolos.default(6,$3,$4,null)) }
+                | tipo ID       { $$ = new Array(); $$.push(new simbolos.default(6,$1,$2,null)); }
+                ;
+
+llamada : ID PARA PARC      { $$ = new llamada.default($1,[],@1.first_line,@1.last_column); }
+        | ID PARA lista_exp PARC        { $$ = new llamada.default($1,$3,@1.first_line,@1.last_column); }
+        ;
+
+lista_exp : lista_exp COMA e        { $$ = $1; $$.push($3); }
+            | e     { $$ = new Array(); $$.push($1); }
             ;
 
 declaracion : tipo lista_simbolos PYC       {$$ = new declaracion.default($1,$2,@1.first_line,@1.first_column); }

@@ -1,4 +1,5 @@
 import errores from "./ast/errores";
+import { instruccion } from "./interfaces/instruccion";
 
 export default class controlador {
     public errores: Array<errores>;
