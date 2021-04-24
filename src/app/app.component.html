@@ -1,7 +1,8 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <div class="container-fluid">
-    <button (click)="ejecutar()" type="button" class="btn btn-link">Analizar</button>
-  </div>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <button (click)="ejecutar()" type="button" class="btn btn-link text-light">Analizar</button>
+  <button (click)="ejecutar()" type="button" class="btn btn-link text-light">Tabla de simbolos</button>
+  <button (click)="ejecutar()" type="button" class="btn btn-link text-light">AST</button>
+  <button (click)="ejecutar()" type="button" class="btn btn-link text-light">Errores</button>
 </nav>
 
 <div class="container">
@@ -14,7 +15,7 @@
         <div class="col-12">
           <ngx-codemirror [(ngModel)]="contenido" [options]="{
     lineNumbers: true,
-    theme: 'material',
+    theme: 'the-matrix',
     mode: 'markdown'
   }"></ngx-codemirror>
         </div>
@@ -28,7 +29,7 @@
         <div class="col-12">
           <ngx-codemirror [(ngModel)]="consola" [options]="{
             lineNumbers: true,
-            theme: 'material',
+            theme: 'the-matrix',
             mode: 'markdown'
           }"></ngx-codemirror>
         </div>
@@ -41,7 +42,7 @@
     </div>
     <div class="col-12">
       <table class="table">
-        <thead class="table-dark">
+        <thead class="table table-dark">
           <tr>
             <td>Simbolo</td>
             <td>tipo</td>
@@ -52,13 +53,37 @@
           </tr>
         </thead>
         <tbody *ngFor="let simbolo of tabla2">
-          <tr>
+          <tr class="bg-light">
             <td>{{simbolo.simbol}}</td>
             <td>{{simbolo.tipo}}</td>
             <td>{{simbolo.identificador}}</td>
             <td>{{simbolo.valor}}</td>
             <td>{{simbolo.linea}}</td>
             <td>{{simbolo.columna}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="col-12">
+      <h1>Reporte errores</h1>
+    </div>
+    <div class="col-12">
+      <table class="table">
+        <thead class="table table-dark">
+          <tr>
+            <td>Tipo error</td>
+            <td>Descripcion</td>
+            <td>Linea</td>
+            <td>Columna</td>
+          </tr>
+        </thead>
+        <tbody *ngFor="let simbolo of tabla2">
+          <tr class="bg-light">
+            <td>{{simbolo.simbol}}</td>
+            <td>{{simbolo.tipo}}</td>
+            <td>{{simbolo.identificador}}</td>
+            <td>{{simbolo.valor}}</td>
           </tr>
         </tbody>
       </table>

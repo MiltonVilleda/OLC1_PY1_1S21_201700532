@@ -1,7 +1,7 @@
-/* You can add global styles to this file, and also import other style files */
-
 body {
-  background-color: #2e2e2e;
+  background: #009FFF;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right, #ec2F4B, #009FFF);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right, #ec2F4B, #009FFF); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 }
 .text-poppy-red {
   color: #ef5350 !important;
