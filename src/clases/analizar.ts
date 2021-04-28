@@ -1,6 +1,7 @@
 //import * as sintactico from '../analizadores/gramatica';
 import { ControlContainer } from '@angular/forms';
 import * as interprete from '../analizadores/interprete';
+import nodo from './ast/nodo';
 import controlador from './controlador';
 import { simbolo } from './interfaces/simbolo';
 import { tablaSimbolos } from './tablaSimbolos/tablaSimbolos';
@@ -69,5 +70,14 @@ export class analizador {
             tabla_array.push(new simbolo(simbol,tipo,identificador,valor,linea,columna))
         }
         return tabla_array
+    }
+    recorrer(input):any{
+        try {
+            let ast = interprete.parse(input);
+            let nodo_ast = ast.recorrer()
+            return nodo_ast
+        } catch (err) {
+            console.log(err);
+        }
     }
 }

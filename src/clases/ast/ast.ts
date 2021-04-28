@@ -1,4 +1,5 @@
 import { execSync } from "node:child_process";
+import { CONNREFUSED } from "node:dns";
 import { report } from "node:process";
 import controlador from "../controlador";
 import declaracion from "../instrucciones/declaracion";
@@ -6,6 +7,7 @@ import exec from "../instrucciones/exec";
 import funcion from "../instrucciones/funcion";
 import { instruccion } from "../interfaces/instruccion";
 import { tablaSimbolos } from "../tablaSimbolos/tablaSimbolos";
+import errores from "./errores";
 import nodo from "./nodo";
 
 export default class ast implements instruccion {
@@ -23,11 +25,13 @@ export default class ast implements instruccion {
             }
         }
         for (let instruccion of this.lista_instrucciones) {
-            if (instruccion instanceof exec && ejecutar == false){
-                instruccion.ejecutar(controlador,ts)
+            if (instruccion instanceof exec && ejecutar == false) {
+                instruccion.ejecutar(controlador, ts)
                 ejecutar = true
-            } else if (ejecutar){
-                // TODO reporter error
+            } else if (ejecutar) {
+                let error = new errores('Semantico', `Se ha encontrado mas de un metodo exec`, 0, 0);
+                controlador.errores.push(error);
+                controlador.appEnd(`Error semantico: Se ha encontrado mas de un metodo exec`);
                 return
             }
             if (instruccion instanceof declaracion) {
@@ -36,6 +40,10 @@ export default class ast implements instruccion {
         }
     }
     recorrer(): nodo {
-        throw new Error("Method not implemented.");
+        let raiz = new nodo("ENTRADA", "")
+        for (let instruccion of this.lista_instrucciones) {
+            raiz.addHijo(instruccion.recorrer())
+        }
+        return raiz
     }
 }

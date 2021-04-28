@@ -17,7 +17,10 @@ export default class exec implements instruccion {
         this.llamada.ejecutar(controlador, ts);
     }
     recorrer(): nodo {
-        throw new Error("Method not implemented.");
+        let padre = new nodo('exec', "")
+        let hijo = this.llamada.recorrer()
+        padre.addHijo(hijo)
+        return padre
     }
 
 }

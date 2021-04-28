@@ -3,7 +3,6 @@ import nodo from "../ast/nodo";
 import controlador from "../controlador";
 import { expresion } from "../interfaces/expresion";
 import { instruccion } from "../interfaces/instruccion";
-import simbolos from "../tablaSimbolos/simbolos";
 import { tablaSimbolos } from "../tablaSimbolos/tablaSimbolos";
 import { tipo } from "../tablaSimbolos/tipo";
 
@@ -25,7 +24,7 @@ export default class asignacion implements instruccion {
             let variable = ts.getSimbolo(this.identificador);
             let tipo_var = this.getTipo_(valor);
             let tipo_ = variable.tipo.type;
-            if (tipo_ == tipo_var || (tipo_ == tipo.CARACTER && tipo_var == tipo.CADENA && valor.lenght == 1) || (tipo_ == tipo.DOUBLE && tipo_var == tipo.ENTERO)){
+            if (tipo_ == tipo_var || (tipo_ == tipo.CARACTER && tipo_var == tipo.CADENA && valor.lenght == 1) || (tipo_ == tipo.DOUBLE && tipo_var == tipo.ENTERO && !valor.toString().includes('.')) || tipo_ == tipo.CADENA && tipo_var == tipo.CARACTER){
                 console.log("ASIGNACION, TIPO IGUAL");
                 ts.getSimbolo(this.identificador).setValor(valor);
             } else {
@@ -40,7 +39,11 @@ export default class asignacion implements instruccion {
         }
     }
     recorrer(): nodo {
-        throw new Error("Method not implemented.");
+        let padre = new nodo("asignacion","")
+        let hijo = new nodo(this.identificador,"")
+        hijo.addHijo(this.valor.recorrer())
+        padre.addHijo(hijo)
+        return padre
     }
     getTipo_(valor){
         if (typeof valor === 'number' && valor.toString().includes('.')){

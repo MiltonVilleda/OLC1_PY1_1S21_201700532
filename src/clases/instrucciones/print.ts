@@ -16,11 +16,20 @@ export default class print implements instruccion {
     ejecutar(controlador: controlador, ts: tablaSimbolos) {
         // TODO verificar que el tipo de valor es un primitivo
         let valor = this.expresion.getValor(controlador, ts)
-        controlador.appEnd(valor)
+        if (valor!= null){
+            controlador.appEnd(valor)
+        }
         return null;
     }
     recorrer(): nodo {
-        throw new Error("Method not implemented.");
+        let padre = new nodo('Print', "")
+        padre.addHijo(new nodo("Print", ""))
+        padre.addHijo(new nodo("(", ""))
+        let hijo = new nodo("exp", "")
+        hijo.addHijo(this.expresion.recorrer())
+        padre.addHijo(hijo)
+        padre.addHijo(new nodo(")", ""))
+        return padre
     }
 
 }

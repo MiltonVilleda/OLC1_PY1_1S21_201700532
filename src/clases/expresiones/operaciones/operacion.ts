@@ -28,6 +28,7 @@ export default class operacion implements expresion {
     public e2: expresion;
     public expU: boolean;
     public operador: operador;
+    public soperador: string;
     public linea: number;
     public columna: number;
 
@@ -38,6 +39,7 @@ export default class operacion implements expresion {
         this.linea = linea;
         this.columna = columna;
         this.expU = expU;
+        this.soperador = operador
         this.operador = this.getOperador(operador)
     }
 

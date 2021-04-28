@@ -32,7 +32,9 @@ export default class primitivo implements expresion {
         return this.primitivo;
     }
     recorrer(): nodo {
-        throw new Error("Method not implemented.");
+        let padre = new nodo('Primitivo', this.primitivo.toString())
+        padre.addHijo(new nodo(this.primitivo.toString(), ""))
+        return padre
     }
 
 }

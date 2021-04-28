@@ -5,6 +5,7 @@
 %lex
 %options case-insensitive
 %option yylineno
+//%option yyloc
 
 num         [0-9]+
 id          [a-zñA-ZÑ][a-zñA-ZÑ0-9_]*
@@ -22,6 +23,7 @@ caracter    (\'({escape}|{aceptacion2})*\')
 
 /* Simbolos del programa */
 "++"                   { console.log("Reconocio : "+ yytext); return 'INCRE'}
+"--"                   { console.log("Reconocio : "+ yytext); return 'DECRE'}
 "("                    { console.log("Reconocio : "+ yytext); return 'PARA'}
 ")"                    { console.log("Reconocio : "+ yytext); return 'PARC'}
 "["                    { console.log("Reconocio : "+ yytext); return 'CORA'}
@@ -70,6 +72,8 @@ caracter    (\'({escape}|{aceptacion2})*\')
 "while"               { console.log("Reconocio : "+ yytext); return 'WHILE'}
 "void"               { console.log("Reconocio : "+ yytext); return 'VOID'}
 "exec"               { console.log("Reconocio : "+ yytext); return 'EXEC'}
+"break"               { console.log("Reconocio : "+ yytext); return 'BREAK'}
+"return"               { console.log("Reconocio : "+ yytext); return 'RETURN'}
 
 /* SIMBOLOS ER */
 [0-9]+("."[0-9]+)?\b  { console.log("Reconocio : "+ yytext); return 'DECIMAL'}
@@ -85,7 +89,9 @@ caracter    (\'({escape}|{aceptacion2})*\')
 <<EOF>>               return 'EOF'
 
 /* Errores lexicos */
-.                     return 'ERROR'
+.                     { console.log("Error con: " + yytext)
+                        new errores.default("Error lexico",`El caracter ${yytext} no pertence al lenguaje`,yylineno+1,yylloc.last_column+1)
+                        }
 
 /lex
 
@@ -112,6 +118,9 @@ caracter    (\'({escape}|{aceptacion2})*\')
     const funcion = require('../clases/instrucciones/funcion')
     const llamada = require('../clases/instrucciones/llamada')
     const exec = require('../clases/instrucciones/exec')
+
+    const break_ = require('../clases/instrucciones/sentenciasTransferencia/break_')
+    const errores = require('../clases/ast/errores')
 %}
 
 /* Precedencia de operadores */
@@ -148,8 +157,16 @@ instruccion : declaracion       { $$ = $1; }
             | funciones         { $$ = $1; }
             | llamada PYC       { $$ = $1; }
             | EXEC llamada PYC       { $$ = new exec.default($2,@1.first_line,@1.last_column) }
+            | ID INCRE PYC      { $$ = new asignacion.default($1,new aritmetica.default(new identificador.default($1,@1.first_line,@1.last_column),'+',new primitivo.default(1,@1.first_line,@1.last_column),@1.first_line,@1.last_column,false),@1.first_line,@1.first_column); }
+            | ID DECRE PYC      { $$ = new asignacion.default($1,new aritmetica.default(new identificador.default($1,@1.first_line,@1.last_column),'-',new primitivo.default(1,@1.first_line,@1.last_column),@1.first_line,@1.last_column,false),@1.first_line,@1.first_column); }
+            | BREAK PYC         { $$ = new break_.default(); }
+            | return PYC        {  }
+            | return e PYC      {  }
+            | error             { console.log("Error con: " + yytext)
+                                new errores.default("Error sintactico",`${yytext} genera conflicto`,this._$.first_line,this._$.first_column)
+                                }
             ;
-
+                                                            //constructor(condicion, lista_if, lista_else, linea, columna) {
 sent_if : IF PARA e PARC LLAVEA instrucciones LLAVEC        { $$ = new if_.default($3,$6,[],@1.first_line,@1.last_column) }
         | IF PARA e PARC LLAVEA instrucciones LLAVEC ELSE LLAVEA instrucciones LLAVEC  { $$ = new if_.default($3,$6,$10,@1.first_line,@1.last_column) }
         | IF PARA e PARC LLAVEA instrucciones LLAVEC ELSE sent_if       { $$ = new if_.default($3,$6,[$9],@1.first_line,@1.last_column) }
@@ -160,13 +177,13 @@ sent_while : WHILE PARA e PARC LLAVEA instrucciones LLAVEC      { $$ = new while
 
 print : PRINT PARA e PARC PYC       { $$ = new print.default($3,@1.first_line,@1.last_column) }
             ;
-
-funciones : VOID ID PARA PARC LLAVEA instrucciones LLAVEC       { $$ = new funcion.default(3,new tipo.default('VOID'),$2,null,[],true,$6,@1.first_line,@1.last_column); }
-            | VOID ID PARA lista_parametros PARC LLAVEA instrucciones LLAVEC { $$ = new funcion.default(3,new tipo.default('VOID'),$2,$4,true,$7,@1.first_line,@1.last_column); }
+                                                                                            //constructor(simbolo, tipo, identificador, lista_params, metodo, lista_instrucciones, linea, columna) {
+funciones : VOID ID PARA PARC LLAVEA instrucciones LLAVEC                       { $$ = new funcion.default(3,new tipo.default('VOID'),$2,[],true,$6,@1.first_line,@1.last_column); }
+            | VOID ID PARA lista_parametros PARC LLAVEA instrucciones LLAVEC    { $$ = new funcion.default(3,new tipo.default('VOID'),$2,$4,true,$7,@1.first_line,@1.last_column); }
             ;
-
-lista_parametros : lista_parametros COMA tipo ID        { $$ = $1; $$.push(new simbolos.default(6,$3,$4,null)) }
-                | tipo ID       { $$ = new Array(); $$.push(new simbolos.default(6,$1,$2,null)); }
+                                                                                    //constructor(simbolo, tipo, identificador, valor: any, linea: number, columna: number,lista_param?, metodo?) {
+lista_parametros : lista_parametros COMA tipo ID        { $$ = $1; $$.push(new simbolos.default(6,$3,$4,new identificador.default($4,@4.first_line,@4.last_column),@4.first_line,@4.last_column)) }
+            | tipo ID                                   { $$ = new Array(); $$.push(new simbolos.default(6,$1,$2,new identificador.default($2,@2.first_line,@2.last_column),@2.first_line,@2.last_column)); }
                 ;
 
 llamada : ID PARA PARC      { $$ = new llamada.default($1,[],@1.first_line,@1.last_column); }
@@ -196,31 +213,33 @@ lista_simbolos : lista_simbolos COMA ID                 { $$ = $1; $$.push(new s
                 | ID IGUAL e        { $$ = new Array(); $$.push(new simbolos.default(1,null,$1,$3)); }
                 ;
 
-e : e MAS e { $$ = new aritmetica.default($1,'+', $3, $1.first_line, $1.last_column,false); }
-    | e MENOS e { $$ = new aritmetica.default($1,'-', $3, $1.first_line, $1.last_column,false); }
-    | e MULTI e { $$ = new aritmetica.default($1,'*', $3, $1.first_line, $1.last_column,false); }
-    | e DIV e { $$ = new aritmetica.default($1,'/', $3, $1.first_line, $1.last_column,false); }
-    | e POTENCIA e { $$ = new aritmetica.default($1,'^', $3, $1.first_line, $1.last_column,false); }
-    | e MODULO e { $$ = new aritmetica.default($1,'%', $3, $1.first_line, $1.last_column,false); }
-    | e OR e { $$ = new logica.default($1,'||', $3, $1.first_line, $1.last_column,false); }
-    | e AND e { $$ = new logica.default($1,'&&', $3, $1.first_line, $1.last_column,false); }
-    | NOT e { $$ = new logica.default($2,'!', $2, $2.first_line, $2.last_column,false); }
-    | e MENORQUE e { $$ = new relacional.default($1,'<', $3, $1.first_line, $1.last_column,false); }
-    | e MAYORQUE e { $$ = new relacional.default($1,'>', $3, $1.first_line, $1.last_column,false); }
-    | e MENORIGUAL e { $$ = new relacional.default($1,'<=', $3, $1.first_line, $1.last_column,false); }
-    | e MAYORIGUAL e { $$ = new relacional.default($1,'>=', $3, $1.first_line, $1.last_column,false); }
-    | e IGUALIGUAL e { $$ = new relacional.default($1,'==', $3, $1.first_line, $1.last_column,false); }
-    | e DIFERENTE e { $$ = new relacional.default($1,'!=', $3, $1.first_line, $1.last_column,false); }
-    | MENOS e %prec UNARIO { $$ = new aritmetica.default($2,'UNARIO', $2, $2.first_line, $2.last_column,false); }
-    | PARA e PARC { $$ = $2; }
-    | DECIMAL { $$ = new primitivo.default(Number(yytext), $1.first_line, $1.last_column); }
-    | ENTERO { $$ = new primitivo.default(Number(yytext), $1.first_line, $1.last_column); }
-    | CADENA { $1 = $1.slice(1, $1.length-1); $$ = new primitivo.default($1, $1.first_line, $1.last_column); }
-    | CHAR { $1 = $1.slice(1, $1.length-1); $$ = new primitivo.default($1, $1.first_line, $1.last_column); }
-    | TRUE { $$ = new primitivo.default(true, $1.first_line, $1.last_column); }
-    | FALSE { $$ = new primitivo.default(false, $1.first_line, $1.last_column); }
-    | ID { $$ = new identificador.default($1,@1.first_line,@1.last_column) }
-    | e INTERROGAC e DOSPTN e { $$ = new ternario.default($1,$3,$5,@1.first_line,@1.last_column) }
+e : e MAS e                     { $$ = new aritmetica.default($1,'+', $3, @1.first_line, @1.last_column,false); }
+    | e MENOS e                 { $$ = new aritmetica.default($1,'-', $3, @1.first_line, @1.last_column,false); }
+    | e MULTI e                 { $$ = new aritmetica.default($1,'*', $3, @1.first_line, @1.last_column,false); }
+    | e DIV e                   { $$ = new aritmetica.default($1,'/', $3, @1.first_line, @1.last_column,false); }
+    | e POTENCIA e              { $$ = new aritmetica.default($1,'^', $3, @1.first_line, @1.last_column,false); }
+    | e MODULO e                { $$ = new aritmetica.default($1,'%', $3, @1.first_line, @1.last_column,false); }
+    | e OR e                    { $$ = new logica.default($1,'||', $3, @1.first_line, @1.last_column,false); }
+    | e AND e                   { $$ = new logica.default($1,'&&', $3, @1.first_line, @1.last_column,false); }
+    | NOT e                     { $$ = new logica.default($2,'!', $2, @2.first_line, @2.last_column,false); }
+    | e MENORQUE e              { $$ = new relacional.default($1,'<', $3, @1.first_line, @1.last_column,false); }
+    | e MAYORQUE e              { $$ = new relacional.default($1,'>', $3, @1.first_line, @1.last_column,false); }
+    | e MENORIGUAL e            { $$ = new relacional.default($1,'<=', $3, @1.first_line, @1.last_column,false); }
+    | e MAYORIGUAL e            { $$ = new relacional.default($1,'>=', $3, @1.first_line, @1.last_column,false); }
+    | e IGUALIGUAL e            { $$ = new relacional.default($1,'==', $3, @1.first_line, @1.last_column,false); }
+    | e DIFERENTE e             { $$ = new relacional.default($1,'!=', $3, @1.first_line, @1.last_column,false); }
+    | MENOS e %prec UNARIO      { $$ = new aritmetica.default($2,'UNARIO', $2, @2.first_line, @2.last_column,false); }
+    | PARA e PARC               { $$ = $2; }
+    | DECIMAL                   { $$ = new primitivo.default(Number(yytext), @1.first_line, $1.last_column); }
+    | ENTERO                    { $$ = new primitivo.default(Number(yytext), @1.first_line, $1.last_column); }
+    | CADENA                    { $1 = $1.slice(1, $1.length-1); $$ = new primitivo.default($1, @1.first_line, $1.last_column); }
+    | CHAR                      { $1 = $1.slice(1, $1.length-1); $$ = new primitivo.default($1, @1.first_line, $1.last_column); }
+    | TRUE                      { $$ = new primitivo.default(true, @1.first_line, $1.last_column); }
+    | FALSE                     { $$ = new primitivo.default(false, @1.first_line, $1.last_column); }
+    | ID                        { $$ = new identificador.default($1,@1.first_line,@1.last_column) }
+    | e INTERROGAC e DOSPTN e   { $$ = new ternario.default($1,$3,$5,@1.first_line,@1.last_column) }
+    | ID INCRE                  { $$ = new aritmetica.default(new identificador.default($1,@1.first_line,@1.last_column),'+',new primitivo.default(1,@1.first_line,@1.last_column),@1.first_line,@1.last_column,false) }
+    | ID DECRE                  { $$ = new aritmetica.default(new identificador.default($1,@1.first_line,@1.last_column),'-',new primitivo.default(1,@1.first_line,@1.last_column),@1.first_line,@1.last_column,false) }
     ;
 
 /*

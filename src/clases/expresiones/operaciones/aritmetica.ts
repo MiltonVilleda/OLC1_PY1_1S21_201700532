@@ -1,5 +1,6 @@
 import { ReturnStatement } from "@angular/compiler/src/output/output_ast";
 import { BrowserStack } from "protractor/built/driverProviders";
+import errores from "src/clases/ast/errores";
 import nodo from "../../ast/nodo";
 import controlador from "../../controlador";
 import { expresion } from "../../interfaces/expresion";
@@ -66,12 +67,16 @@ export default class aritmetica extends operacion implements expresion {
                         return num + valor_e2;
                     } else if (typeof valor_e2 === 'string') {
                         if (valor_e2.length == 1) {
-                            // TODO: error semantico
+                            let error = new errores('Semantico', `La operacion ${valor_e1} ${this.operador} ${valor_e2} no es posible`, this.linea, this.columna);
+                            controlador.errores.push(error);
+                            controlador.appEnd(`Error semantico en la linea ${this.linea} en la columna ${this.columna}: La operacion ${valor_e1} ${this.soperador} ${valor_e2} no es posible`);
                         } else {
                             return valor_e1 + valor_e2;
                         }
                     } else {
-                        // TODO: error semantico
+                        let error = new errores('Semantico', `La operacion ${valor_e1} ${this.soperador} ${valor_e2} no es posible`, this.linea, this.columna);
+                        controlador.errores.push(error);
+                        controlador.appEnd(`Error semantico en la linea ${this.linea} en la columna ${this.columna}: La operacion ${valor_e1} ${this.soperador} ${valor_e2} no es posible`);
                     }
                 } else if (typeof valor_e1 === 'string') {
                     if (valor_e1.length == 1) {
@@ -81,7 +86,9 @@ export default class aritmetica extends operacion implements expresion {
                         } else if (typeof valor_e2 === 'string') {
                             return valor_e1 + valor_e2;
                         } else if (typeof valor_e2 === 'boolean') {
-                            // TODO: error semantico
+                            let error = new errores('Semantico', `La operacion ${valor_e1} ${this.soperador} ${valor_e2} no es posible`, this.linea, this.columna);
+                            controlador.errores.push(error);
+                            controlador.appEnd(`Error semantico en la linea ${this.linea} en la columna ${this.columna}: La operacion ${valor_e1} ${this.soperador} ${valor_e2} no es posible`);
                         }
                     } else {
                         if (typeof valor_e2 === 'number') {
@@ -108,7 +115,9 @@ export default class aritmetica extends operacion implements expresion {
                         let ascii = valor_e2.charCodeAt(0);
                         return valor_e1 - ascii;
                     } else {
-                        // TODO: error semantico
+                        let error = new errores('Semantico', `La operacion ${valor_e1} ${this.soperador} ${valor_e2} no es posible`, this.linea, this.columna);
+                        controlador.errores.push(error);
+                        controlador.appEnd(`Error semantico en la linea ${this.linea} en la columna ${this.columna}: La operacion ${valor_e1} ${this.soperador} ${valor_e2} no es posible`);
                     }
                 } else if (typeof valor_e1 === 'boolean') {
                     if (typeof valor_e2 === 'number') {
@@ -118,17 +127,23 @@ export default class aritmetica extends operacion implements expresion {
                         }
                         return num - valor_e2;
                     } else {
-                        // TODO: error semantico
+                        let error = new errores('Semantico', `La operacion ${valor_e1} ${this.soperador} ${valor_e2} no es posible`, this.linea, this.columna);
+                        controlador.errores.push(error);
+                        controlador.appEnd(`Error semantico en la linea ${this.linea} en la columna ${this.columna}: La operacion ${valor_e1} ${this.soperador} ${valor_e2} no es posible`);
                     }
                 } else if (typeof valor_e1 === 'string' && valor_e1.length == 1) {
                     if (typeof valor_e2 === 'number') {
                         let ascii = valor_e1.charCodeAt(0);
                         return ascii - valor_e2;
                     } else {
-                        // TODO: error semantico
+                        let error = new errores('Semantico', `La operacion ${valor_e1} ${this.soperador} ${valor_e2} no es posible`, this.linea, this.columna);
+                        controlador.errores.push(error);
+                        controlador.appEnd(`Error semantico en la linea ${this.linea} en la columna ${this.columna}: La operacion ${valor_e1} ${this.soperador} ${valor_e2} no es posible`);
                     }
                 } else {
-                    // TODO: error semantico
+                    let error = new errores('Semantico', `La operacion ${valor_e1} ${this.soperador} ${valor_e2} no es posible`, this.linea, this.columna);
+                    controlador.errores.push(error);
+                    controlador.appEnd(`Error semantico en la linea ${this.linea} en la columna ${this.columna}: La operacion ${valor_e1} ${this.soperador} ${valor_e2} no es posible`);
                 }
                 break;
             case operador.MULTIPLICACION:
@@ -139,17 +154,23 @@ export default class aritmetica extends operacion implements expresion {
                         let ascii = valor_e2.charCodeAt(0);
                         return valor_e1 * ascii;
                     } else {
-                        // TODO: error semantico
+                        let error = new errores('Semantico', `La operacion ${valor_e1} ${this.soperador} ${valor_e2} no es posible`, this.linea, this.columna);
+                        controlador.errores.push(error);
+                        controlador.appEnd(`Error semantico en la linea ${this.linea} en la columna ${this.columna}: La operacion ${valor_e1} ${this.soperador} ${valor_e2} no es posible`);
                     }
                 } else if (typeof valor_e1 === 'string' && valor_e1.length == 1) {
                     if (typeof valor_e2 === 'number') {
                         let ascii = valor_e1.charCodeAt(0);
                         return ascii * valor_e2;
                     } else {
-                        // TODO: error semantico
+                        let error = new errores('Semantico', `La operacion ${valor_e1} ${this.soperador} ${valor_e2} no es posible`, this.linea, this.columna);
+                        controlador.errores.push(error);
+                        controlador.appEnd(`Error semantico en la linea ${this.linea} en la columna ${this.columna}: La operacion ${valor_e1} ${this.soperador} ${valor_e2} no es posible`);
                     }
                 } else {
-                    // TODO: error semantico
+                    let error = new errores('Semantico', `La operacion ${valor_e1} ${this.soperador} ${valor_e2} no es posible`, this.linea, this.columna);
+                    controlador.errores.push(error);
+                    controlador.appEnd(`Error semantico en la linea ${this.linea} en la columna ${this.columna}: La operacion ${valor_e1} ${this.soperador} ${valor_e2} no es posible`);
                 }
                 break;
             case operador.DIVISION:
@@ -160,17 +181,23 @@ export default class aritmetica extends operacion implements expresion {
                         let ascii = valor_e2.charCodeAt(0);
                         return valor_e1 / ascii;
                     } else {
-                        // TODO: error semantico
+                        let error = new errores('Semantico', `La operacion ${valor_e1} ${this.soperador} ${valor_e2} no es posible`, this.linea, this.columna);
+                        controlador.errores.push(error);
+                        controlador.appEnd(`Error semantico en la linea ${this.linea} en la columna ${this.columna}: La operacion ${valor_e1} ${this.soperador} ${valor_e2} no es posible`);
                     }
                 } else if (typeof valor_e1 === 'string' && valor_e1.length == 1) {
                     if (typeof valor_e2 === 'number') {
                         let ascii = valor_e1.charCodeAt(0);
                         return ascii / valor_e2;
                     } else {
-                        // TODO: error semantico
+                        let error = new errores('Semantico', `La operacion ${valor_e1} ${this.soperador} ${valor_e2} no es posible`, this.linea, this.columna);
+                        controlador.errores.push(error);
+                        controlador.appEnd(`Error semantico en la linea ${this.linea} en la columna ${this.columna}: La operacion ${valor_e1} ${this.soperador} ${valor_e2} no es posible`);
                     }
                 } else {
-                    // TODO: error semantico
+                    let error = new errores('Semantico', `La operacion ${valor_e1} ${this.soperador} ${valor_e2} no es posible`, this.linea, this.columna);
+                    controlador.errores.push(error);
+                    controlador.appEnd(`Error semantico en la linea ${this.linea} en la columna ${this.columna}: La operacion ${valor_e1} ${this.soperador} ${valor_e2} no es posible`);
                 }
                 break;
             case operador.POTENCIA:
@@ -179,10 +206,14 @@ export default class aritmetica extends operacion implements expresion {
                         let num = Math.pow(valor_e1, valor_e2)
                         return num
                     } else {
-                        // TODO: error semantico
+                        let error = new errores('Semantico', `La operacion ${valor_e1} ${this.soperador} ${valor_e2} no es posible`, this.linea, this.columna);
+                        controlador.errores.push(error);
+                        controlador.appEnd(`Error semantico en la linea ${this.linea} en la columna ${this.columna}: La operacion ${valor_e1} ${this.soperador} ${valor_e2} no es posible`);
                     }
                 } else {
-                    // TODO: error semantico
+                    let error = new errores('Semantico', `La operacion ${valor_e1} ${this.soperador} ${valor_e2} no es posible`, this.linea, this.columna);
+                    controlador.errores.push(error);
+                    controlador.appEnd(`Error semantico en la linea ${this.linea} en la columna ${this.columna}: La operacion ${valor_e1} ${this.soperador} ${valor_e2} no es posible`);
                 }
                 break;
             case operador.MODULO:
@@ -190,26 +221,43 @@ export default class aritmetica extends operacion implements expresion {
                     if (typeof valor_e2 === 'number') {
                         return valor_e1 % valor_e2;
                     } else {
-                        // TODO: error semantico
+                        let error = new errores('Semantico', `La operacion ${valor_e1} ${this.soperador} ${valor_e2} no es posible`, this.linea, this.columna);
+                        controlador.errores.push(error);
+                        controlador.appEnd(`Error semantico en la linea ${this.linea} en la columna ${this.columna}: La operacion ${valor_e1} ${this.soperador} ${valor_e2} no es posible`);
                     }
                 } else {
-                    // TODO: error semantico
+                    let error = new errores('Semantico', `La operacion ${valor_e1} ${this.soperador} ${valor_e2} no es posible`, this.linea, this.columna);
+                    controlador.errores.push(error);
+                    controlador.appEnd(`Error semantico en la linea ${this.linea} en la columna ${this.columna}: La operacion ${valor_e1} ${this.soperador} ${valor_e2} no es posible`);
                 }
                 break;
             case operador.UNARIO:
                 if (typeof valor_e1 === 'number') {
                     return -valor_e1;
                 } else {
-                    // TODO: error
+                    let error = new errores('Semantico', `La operacion ${this.soperador} ${valor_e1} no es posible`, this.linea, this.columna);
+                    controlador.errores.push(error);
+                    controlador.appEnd(`Error semantico en la linea ${this.linea} en la columna ${this.columna}: La operacion ${this.soperador} ${valor_e1} no es posible`);
                 }
                 break;
             default:
-                // TODO: error inesperado
+                let error = new errores('Semantico', `Error inesperado en la operacion`, this.linea, this.columna);
+                controlador.errores.push(error);
+                controlador.appEnd(`Error semantico en la linea ${this.linea} en la columna ${this.columna}: Error inesperado en la operacion`);
                 break;
         }
     }
     recorrer(): nodo {
-        throw new Error("Method not implemented.");
+        let padre = new nodo("exp", "")
+        if (this.expU) {
+            padre.addHijo(new nodo(this.soperador, ""))
+            padre.addHijo(this.e1.recorrer())
+        } else {
+            padre.addHijo(this.e1.recorrer())
+            padre.addHijo(new nodo(this.soperador, ""))
+            padre.addHijo(this.e2.recorrer())
+        }
+        return padre
     }
 
 }

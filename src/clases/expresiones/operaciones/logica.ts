@@ -1,4 +1,5 @@
 import { BreadcrumbModule } from "angular-bootstrap-md";
+import errores from "src/clases/ast/errores";
 import nodo from "src/clases/ast/nodo";
 import controlador from "src/clases/controlador";
 import { expresion } from "src/clases/interfaces/expresion";
@@ -37,10 +38,14 @@ export default class logica extends operacion implements expresion {
                             return false;
                         }
                     } else {
-                        // TODO: error semantico
+                        let error = new errores('Semantico', `La operacion ${valor_e1} ${this.soperador} ${valor_e2} no es posible`, this.linea, this.columna);
+                        controlador.errores.push(error);
+                        controlador.appEnd(`Error semantico en la linea ${this.linea} en la columna ${this.columna}: La operacion ${valor_e1} ${this.soperador} ${valor_e2} no es posible`);
                     }
                 } else {
-                    // TODO: error semantico
+                    let error = new errores('Semantico', `La operacion ${valor_e1} ${this.soperador} ${valor_e2} no es posible`, this.linea, this.columna);
+                    controlador.errores.push(error);
+                    controlador.appEnd(`Error semantico en la linea ${this.linea} en la columna ${this.columna}: La operacion ${valor_e1} ${this.soperador} ${valor_e2} no es posible`);
                 }
                 break;
             case operador.OR:
@@ -52,25 +57,43 @@ export default class logica extends operacion implements expresion {
                             return false;
                         }
                     } else {
-                        // TODO: error semantico
+                        let error = new errores('Semantico', `La operacion ${valor_e1} ${this.soperador} ${valor_e2} no es posible`, this.linea, this.columna);
+                        controlador.errores.push(error);
+                        controlador.appEnd(`Error semantico en la linea ${this.linea} en la columna ${this.columna}: La operacion ${valor_e1} ${this.soperador} ${valor_e2} no es posible`);
                     }
                 } else {
-                    // TODO: error semantico
+                    let error = new errores('Semantico', `La operacion ${valor_e1} ${this.soperador} ${valor_e2} no es posible`, this.linea, this.columna);
+                    controlador.errores.push(error);
+                    controlador.appEnd(`Error semantico en la linea ${this.linea} en la columna ${this.columna}: La operacion ${valor_e1} ${this.soperador} ${valor_e2} no es posible`);
                 }
                 break;
             case operador.NOT:
-                if (typeof valor_e1 === 'boolean'){
+                if (typeof valor_e1 === 'boolean') {
                     return !valor_e1;
                 } else {
-                    // TODO: error semantico
+                    let error = new errores('Semantico', `La operacion ${valor_e1} ${this.soperador} ${valor_e2} no es posible`, this.linea, this.columna);
+                    controlador.errores.push(error);
+                    controlador.appEnd(`Error semantico en la linea ${this.linea} en la columna ${this.columna}: La operacion ${valor_e1} ${this.soperador} ${valor_e2} no es posible`);
                 }
                 break;
             default:
+                let error = new errores('Semantico', `Error inesperado en la operacion`, this.linea, this.columna);
+                controlador.errores.push(error);
+                controlador.appEnd(`Error semantico en la linea ${this.linea} en la columna ${this.columna}: Error inesperado en la operacion`);
                 break;
         }
     }
     recorrer(): nodo {
-        throw new Error("Method not implemented.");
+        let padre = new nodo("exp", "")
+        if (this.expU) {
+            padre.addHijo(new nodo(this.soperador, ""))
+            padre.addHijo(this.e1.recorrer())
+        } else {
+            padre.addHijo(this.e1.recorrer())
+            padre.addHijo(new nodo(this.soperador, ""))
+            padre.addHijo(this.e2.recorrer())
+        }
+        return padre
     }
 
 }

@@ -7,13 +7,30 @@
 
 <div class="container">
   <div class="row mt-3">
+    <div class="col-12">
+      <input id="fileInput" title="Abrir" type="file" size="50" (change)="openFile($event.target)" class="btn btn-secundary" [(ngModel)]="file_">
+      <button onclick="DescargarArchivo();" id="guardar" title="Guardar" class="btn btn-primary"
+        type="button">Guardar</button>
+      <button onclick="agregar();" title="AgregarPestana" id="btn4" class="btn btn-primary" type="button">Agregar
+        Pestana</button>
+      <button onclick="quitar();" title="QuitarPestana" id="btn5" class="btn btn-primary" type="button">Quitar
+        Pestana</button>
+    </div>
+  </div>
+  <div class="row mt-3">
     <div class="col-6">
       <div class="row">
         <div class="col-12">
           <h1>Entrada</h1>
         </div>
+        <!--
+        <select class="form-control" id="selectTest" name="selectTest" [(ngModel)]="p" (change)="cambioTest(test)">
+          <option [value]="test.id_test" *ngFor="let test of tests">{{p.nombre}}</option>
+        </select>
+        -->
         <div class="col-12">
-          <ngx-codemirror [(ngModel)]="contenido" [options]="{
+          
+          <ngx-codemirror id="xxx" [(ngModel)]="contenido" [options]="{
     lineNumbers: true,
     theme: 'the-matrix',
     mode: 'markdown'
@@ -64,7 +81,8 @@
         </tbody>
       </table>
     </div>
-
+  </div>
+  <div class="row mt-3">
     <div class="col-12">
       <h1>Reporte errores</h1>
     </div>
@@ -78,15 +96,26 @@
             <td>Columna</td>
           </tr>
         </thead>
-        <tbody *ngFor="let simbolo of tabla2">
+        <tbody *ngFor="let err of errores2">
           <tr class="bg-light">
-            <td>{{simbolo.simbol}}</td>
-            <td>{{simbolo.tipo}}</td>
-            <td>{{simbolo.identificador}}</td>
-            <td>{{simbolo.valor}}</td>
+            <td>{{err.tipo}}</td>
+            <td>{{err.descripcion}}</td>
+            <td>{{err.linea}}</td>
+            <td>{{err.columna}}</td>
           </tr>
         </tbody>
       </table>
+    </div>
+  </div>
+  <div class="row mt-3">
+    <div class="col-12">
+      <h1>Grafo</h1>
+    </div>
+    <div class="col-12">
+      <div id="ast" class="tabcontent">
+        <!--style="background-color: #"-->
+        <div class="overflow-aout" id="grafico" style="text-align: center;"></div>
+      </div>
     </div>
   </div>
 </div>

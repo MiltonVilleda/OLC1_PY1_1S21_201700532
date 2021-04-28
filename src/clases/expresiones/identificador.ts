@@ -34,7 +34,9 @@ export default class identificador implements expresion {
         }
     }
     recorrer(): nodo {
-        throw new Error("Method not implemented.");
+        let padre = new nodo("Identificador","")
+        padre.addHijo(new nodo(this.identificador,""))
+        return padre
     }
 
 }

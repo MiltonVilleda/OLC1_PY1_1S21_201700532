@@ -1,4 +1,5 @@
 import { BreadcrumbModule } from "angular-bootstrap-md";
+import errores from "src/clases/ast/errores";
 import nodo from "src/clases/ast/nodo";
 import controlador from "src/clases/controlador";
 import { expresion } from "src/clases/interfaces/expresion";
@@ -44,7 +45,9 @@ export default class relacional extends operacion implements expresion {
                             return false;
                         }
                     } else {
-                        // TODO: error semantico
+                        let error = new errores('Semantico', `La operacion ${valor_e1} ${this.soperador} ${valor_e2} no es posible`, this.linea, this.columna);
+                        controlador.errores.push(error);
+                        controlador.appEnd(`Error semantico en la linea ${this.linea} en la columna ${this.columna}: La operacion ${valor_e1} ${this.soperador} ${valor_e2} no es posible`);
                     }
                 } else if (typeof valor_e1 === 'string' && valor_e1.length == 1) {
                     if (typeof valor_e2 === 'number') {
@@ -63,10 +66,14 @@ export default class relacional extends operacion implements expresion {
                             return false;
                         }
                     } else {
-                        // TODO: error semantico
+                        let error = new errores('Semantico', `La operacion ${valor_e1} ${this.soperador} ${valor_e2} no es posible`, this.linea, this.columna);
+                        controlador.errores.push(error);
+                        controlador.appEnd(`Error semantico en la linea ${this.linea} en la columna ${this.columna}: La operacion ${valor_e1} ${this.soperador} ${valor_e2} no es posible`);
                     }
                 } else {
-                    // TODO: error semantico
+                    let error = new errores('Semantico', `La operacion ${valor_e1} ${this.soperador} ${valor_e2} no es posible`, this.linea, this.columna);
+                    controlador.errores.push(error);
+                    controlador.appEnd(`Error semantico en la linea ${this.linea} en la columna ${this.columna}: La operacion ${valor_e1} ${this.soperador} ${valor_e2} no es posible`);
                 }
                 break;
             case operador.MENORIGUAL:
@@ -85,7 +92,9 @@ export default class relacional extends operacion implements expresion {
                             return false;
                         }
                     } else {
-                        // TODO: error semantico
+                        let error = new errores('Semantico', `La operacion ${valor_e1} ${this.soperador} ${valor_e2} no es posible`, this.linea, this.columna);
+                        controlador.errores.push(error);
+                        controlador.appEnd(`Error semantico en la linea ${this.linea} en la columna ${this.columna}: La operacion ${valor_e1} ${this.soperador} ${valor_e2} no es posible`);
                     }
                 } else if (typeof valor_e1 === 'string' && valor_e1.length == 1) {
                     if (typeof valor_e2 === 'number') {
@@ -104,10 +113,14 @@ export default class relacional extends operacion implements expresion {
                             return false;
                         }
                     } else {
-                        // TODO: error semantico
+                        let error = new errores('Semantico', `La operacion ${valor_e1} ${this.soperador} ${valor_e2} no es posible`, this.linea, this.columna);
+                        controlador.errores.push(error);
+                        controlador.appEnd(`Error semantico en la linea ${this.linea} en la columna ${this.columna}: La operacion ${valor_e1} ${this.soperador} ${valor_e2} no es posible`);
                     }
                 } else {
-                    // TODO: error semantico
+                    let error = new errores('Semantico', `La operacion ${valor_e1} ${this.soperador} ${valor_e2} no es posible`, this.linea, this.columna);
+                    controlador.errores.push(error);
+                    controlador.appEnd(`Error semantico en la linea ${this.linea} en la columna ${this.columna}: La operacion ${valor_e1} ${this.soperador} ${valor_e2} no es posible`);
                 }
                 break;
             case operador.MAYORQUE:
@@ -126,7 +139,9 @@ export default class relacional extends operacion implements expresion {
                             return false;
                         }
                     } else {
-                        // TODO: error semantico
+                        let error = new errores('Semantico', `La operacion ${valor_e1} ${this.soperador} ${valor_e2} no es posible`, this.linea, this.columna);
+                        controlador.errores.push(error);
+                        controlador.appEnd(`Error semantico en la linea ${this.linea} en la columna ${this.columna}: La operacion ${valor_e1} ${this.soperador} ${valor_e2} no es posible`);
                     }
                 } else if (typeof valor_e1 === 'string' && valor_e1.length == 1) {
                     if (typeof valor_e2 === 'number') {
@@ -145,10 +160,14 @@ export default class relacional extends operacion implements expresion {
                             return false;
                         }
                     } else {
-                        // TODO: error semantico
+                        let error = new errores('Semantico', `La operacion ${valor_e1} ${this.soperador} ${valor_e2} no es posible`, this.linea, this.columna);
+                        controlador.errores.push(error);
+                        controlador.appEnd(`Error semantico en la linea ${this.linea} en la columna ${this.columna}: La operacion ${valor_e1} ${this.soperador} ${valor_e2} no es posible`);
                     }
                 } else {
-                    // TODO: error semantico
+                    let error = new errores('Semantico', `La operacion ${valor_e1} ${this.soperador} ${valor_e2} no es posible`, this.linea, this.columna);
+                    controlador.errores.push(error);
+                    controlador.appEnd(`Error semantico en la linea ${this.linea} en la columna ${this.columna}: La operacion ${valor_e1} ${this.soperador} ${valor_e2} no es posible`);
                 }
                 break;
             case operador.MAYORIGUAL:
@@ -167,7 +186,9 @@ export default class relacional extends operacion implements expresion {
                             return false;
                         }
                     } else {
-                        // TODO: error semantico
+                        let error = new errores('Semantico', `La operacion ${valor_e1} ${this.soperador} ${valor_e2} no es posible`, this.linea, this.columna);
+                        controlador.errores.push(error);
+                        controlador.appEnd(`Error semantico en la linea ${this.linea} en la columna ${this.columna}: La operacion ${valor_e1} ${this.soperador} ${valor_e2} no es posible`);
                     }
                 } else if (typeof valor_e1 === 'string' && valor_e1.length == 1) {
                     if (typeof valor_e2 === 'number') {
@@ -186,10 +207,14 @@ export default class relacional extends operacion implements expresion {
                             return false;
                         }
                     } else {
-                        // TODO: error semantico
+                        let error = new errores('Semantico', `La operacion ${valor_e1} ${this.soperador} ${valor_e2} no es posible`, this.linea, this.columna);
+                        controlador.errores.push(error);
+                        controlador.appEnd(`Error semantico en la linea ${this.linea} en la columna ${this.columna}: La operacion ${valor_e1} ${this.soperador} ${valor_e2} no es posible`);
                     }
                 } else {
-                    // TODO: error semantico
+                    let error = new errores('Semantico', `La operacion ${valor_e1} ${this.soperador} ${valor_e2} no es posible`, this.linea, this.columna);
+                    controlador.errores.push(error);
+                    controlador.appEnd(`Error semantico en la linea ${this.linea} en la columna ${this.columna}: La operacion ${valor_e1} ${this.soperador} ${valor_e2} no es posible`);
                 }
                 break;
             case operador.IGUALIGUAL:
@@ -226,7 +251,9 @@ export default class relacional extends operacion implements expresion {
                                 return false;
                             }
                         } else {
-                            // TODO: error semantico
+                            let error = new errores('Semantico', `La operacion ${valor_e1} ${this.soperador} ${valor_e2} no es posible`, this.linea, this.columna);
+                            controlador.errores.push(error);
+                            controlador.appEnd(`Error semantico en la linea ${this.linea} en la columna ${this.columna}: La operacion ${valor_e1} ${this.soperador} ${valor_e2} no es posible`);
                         }
                     } else {
                         if (typeof valor_e2 === 'string') {
@@ -236,11 +263,15 @@ export default class relacional extends operacion implements expresion {
                                 return false;
                             }
                         } else {
-                            // TODO: error semantico
+                            let error = new errores('Semantico', `La operacion ${valor_e1} ${this.soperador} ${valor_e2} no es posible`, this.linea, this.columna);
+                            controlador.errores.push(error);
+                            controlador.appEnd(`Error semantico en la linea ${this.linea} en la columna ${this.columna}: La operacion ${valor_e1} ${this.soperador} ${valor_e2} no es posible`);
                         }
                     }
                 } else {
-                    // TODO: error semantico
+                    let error = new errores('Semantico', `La operacion ${valor_e1} ${this.soperador} ${valor_e2} no es posible`, this.linea, this.columna);
+                    controlador.errores.push(error);
+                    controlador.appEnd(`Error semantico en la linea ${this.linea} en la columna ${this.columna}: La operacion ${valor_e1} ${this.soperador} ${valor_e2} no es posible`);
                 }
                 break;
             case operador.DIFERENTE:
@@ -277,7 +308,9 @@ export default class relacional extends operacion implements expresion {
                                 return false;
                             }
                         } else {
-                            // TODO: error semantico
+                            let error = new errores('Semantico', `La operacion ${valor_e1} ${this.soperador} ${valor_e2} no es posible`, this.linea, this.columna);
+                            controlador.errores.push(error);
+                            controlador.appEnd(`Error semantico en la linea ${this.linea} en la columna ${this.columna}: La operacion ${valor_e1} ${this.soperador} ${valor_e2} no es posible`);
                         }
                     } else {
                         if (typeof valor_e2 === 'string') {
@@ -287,19 +320,35 @@ export default class relacional extends operacion implements expresion {
                                 return false;
                             }
                         } else {
-                            // TODO: error semantico
+                            let error = new errores('Semantico', `La operacion ${valor_e1} ${this.soperador} ${valor_e2} no es posible`, this.linea, this.columna);
+                            controlador.errores.push(error);
+                            controlador.appEnd(`Error semantico en la linea ${this.linea} en la columna ${this.columna}: La operacion ${valor_e1} ${this.soperador} ${valor_e2} no es posible`);
                         }
                     }
                 } else {
-                    // TODO: error semantico
+                    let error = new errores('Semantico', `La operacion ${valor_e1} ${this.soperador} ${valor_e2} no es posible`, this.linea, this.columna);
+                    controlador.errores.push(error);
+                    controlador.appEnd(`Error semantico en la linea ${this.linea} en la columna ${this.columna}: La operacion ${valor_e1} ${this.soperador} ${valor_e2} no es posible`);
                 }
                 break;
             default:
+                let error = new errores('Semantico', `Error inesperado en la operacion`, this.linea, this.columna);
+                controlador.errores.push(error);
+                controlador.appEnd(`Error semantico en la linea ${this.linea} en la columna ${this.columna}: Error inesperado en la operacion`);
                 break;
         }
     }
     recorrer(): nodo {
-        throw new Error("Method not implemented.");
+        let padre = new nodo("exp", "")
+        if (this.expU) {
+            padre.addHijo(new nodo(this.soperador, ""))
+            padre.addHijo(this.e1.recorrer())
+        } else {
+            padre.addHijo(this.e1.recorrer())
+            padre.addHijo(new nodo(this.soperador, ""))
+            padre.addHijo(this.e2.recorrer())
+        }
+        return padre
     }
 
 }

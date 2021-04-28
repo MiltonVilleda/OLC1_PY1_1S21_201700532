@@ -1,6 +1,7 @@
 import { ThrowStmt } from "@angular/compiler";
 import tipo from "./tipo";
 export default class simbolos {
+    //param simbolo indica el tipo de simbolo que es: 1- variable  2- funcion  3- metodo  4- vector  5- lista  6- param
     public simbolo: number;
     //Variables
     public tipo: tipo;

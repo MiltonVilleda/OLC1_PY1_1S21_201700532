@@ -1,8 +1,10 @@
 import { THIS_EXPR } from "@angular/compiler/src/output/output_ast";
+import { Validators } from "@angular/forms";
 import { Console } from "node:console";
 import errores from "../ast/errores";
 import nodo from "../ast/nodo";
 import controlador from "../controlador";
+import primitivo from "../expresiones/primitivo";
 import { instruccion } from "../interfaces/instruccion";
 import simbolos from "../tablaSimbolos/simbolos";
 import { tablaSimbolos } from "../tablaSimbolos/tablaSimbolos";
@@ -34,7 +36,7 @@ export default class declaracion implements instruccion {
             if (variable.valor != null) {
                 let valor = variable.valor.getValor(controlador, ts);
                 let tipo_ = variable.valor.getTipo(controlador,ts);
-                if (tipo_ == this.type.type || (tipo_ == tipo.CARACTER && this.type.type == tipo.CADENA && valor.lenght == 1) || (tipo_ == tipo.DOUBLE && this.type.type == tipo.ENTERO)){
+                if (tipo_ == this.type.type || (tipo_ == tipo.CARACTER && this.type.type == tipo.CADENA && valor.lenght == 1) || (tipo_ == tipo.DOUBLE && this.type.type == tipo.ENTERO && !valor.toString().includes('.')) || this.type.type == tipo.CADENA && tipo_ == tipo.CARACTER){
                     let newSimbolo = new simbolos(variable.simbolo, this.type, variable.identificador, valor, this.linea, this.columna);
                     ts.agregar(variable.identificador, newSimbolo);
                 } else {
@@ -49,6 +51,20 @@ export default class declaracion implements instruccion {
         }
     }
     recorrer(): nodo {
-        throw new Error("Method not implemented.");
+        let padre = new nodo('declaracion', "")
+        let nhijo = new nodo(this.type.stype,"")
+        padre.addHijo(nhijo)
+        for (let nsimbolo of this.lista_simbolos){
+            if (nsimbolo.simbolo == 1){
+                let hijo = new nodo(nsimbolo.identificador,"")
+                if (nsimbolo.valor != null){
+                    hijo.addHijo(nsimbolo.valor.recorrer())
+                    padre.addHijo(hijo)
+                } else {
+                    padre.addHijo(hijo)
+                }
+            }
+        }
+        return padre
     }
 }

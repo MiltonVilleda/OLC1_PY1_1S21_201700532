@@ -16,7 +16,7 @@ export class tablaSimbolos {
     existe(id: string): boolean{
         let ts: tablaSimbolos = this;
         while (ts != null){
-            let existe = ts.tabla.get(id);
+            let existe = ts.tabla.get(id.toLocaleLowerCase());
             if (existe != null){
                 return true;
             }
@@ -27,7 +27,7 @@ export class tablaSimbolos {
 
     existeAtual(id: string): boolean{
         let ts: tablaSimbolos = this;
-        let existe = ts.tabla.get(id);
+        let existe = ts.tabla.get(id.toLocaleLowerCase());
         if (existe != null){
             return true;
         }
