@@ -1,3 +1,4 @@
+import { expresion } from "src/clases/interfaces/expresion";
 import errores from "../ast/errores";
 import nodo from "../ast/nodo";
 import controlador from "../controlador";
@@ -5,6 +6,7 @@ import { instruccion } from "../interfaces/instruccion";
 import simbolos from "../tablaSimbolos/simbolos";
 import { tablaSimbolos } from "../tablaSimbolos/tablaSimbolos";
 import tipo from "../tablaSimbolos/tipo";
+import return_ from "./sentenciasTransferencia/return_";
 
 export default class funcion extends simbolos implements instruccion {
     public lista_instrucciones: Array<instruccion>
@@ -31,10 +33,30 @@ export default class funcion extends simbolos implements instruccion {
             }
         }
         if (correcto) {
+            console.log(this.lista_instrucciones)
             for (let instruccion of this.lista_instrucciones) {
                 let res = instruccion.ejecutar(controlador, ts_local)
-                if (res != null) {
-                    return res
+                if (instruccion instanceof return_) {
+                    /*if (res != null) {
+                        return res
+                    }*/
+                    if (this.metodo){
+                        if (res == null) {
+                            return null
+                        } else {
+                            let error = new errores('Semantico', `El metodo  ${this.simbolo} no puede retornar un valor`, this.linea, this.columna);
+                            controlador.errores.push(error);
+                            controlador.appEnd(`Error semantico en la linea ${this.linea} en la columna ${this.columna}: El metodo ${this.identificador} no puede retornar un valor`);
+                        }
+                    } else {
+                        if (res != null){
+                            return res
+                        } else {
+                            let error = new errores('Semantico', `El metodo  ${this.simbolo} no puede retornar null`, this.linea, this.columna);
+                            controlador.errores.push(error);
+                            controlador.appEnd(`Error semantico en la linea ${this.linea} en la columna ${this.columna}: El metodo ${this.identificador} no puede null`);
+                        }
+                    }
                 }
             }
         }
@@ -54,10 +76,10 @@ export default class funcion extends simbolos implements instruccion {
         padre.addHijo(new nodo(this.tipo.stype, ""))
         padre.addHijo(new nodo(this.identificador, ""))
         padre.addHijo(new nodo("(", ""))
-        if (this.lista_param.length > 0){
-            let hijo = new nodo("Parametros","")
-            for (let i = 0; i < this.lista_param.length; i++){
-                hijo.addHijo(new nodo(this.lista_param[i].identificador,""))
+        if (this.lista_param.length > 0) {
+            let hijo = new nodo("Parametros", "")
+            for (let i = 0; i < this.lista_param.length; i++) {
+                hijo.addHijo(new nodo(this.lista_param[i].identificador, ""))
             }
             padre.addHijo(hijo)
         }

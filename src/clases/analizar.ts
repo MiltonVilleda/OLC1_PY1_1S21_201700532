@@ -3,6 +3,7 @@ import { ControlContainer } from '@angular/forms';
 import * as interprete from '../analizadores/interprete';
 import nodo from './ast/nodo';
 import controlador from './controlador';
+import primitivo from './expresiones/primitivo';
 import { simbolo } from './interfaces/simbolo';
 import { tablaSimbolos } from './tablaSimbolos/tablaSimbolos';
 
@@ -65,6 +66,15 @@ export class analizador {
             tipo = ts.getSimbolo(clave).tipo.stype
             identificador = ts.getSimbolo(clave).identificador
             valor = ts.getSimbolo(clave).valor
+            if (valor instanceof Array){
+                let cadena:string = ""
+                for (let val of valor){
+                    let val_ = val as primitivo
+                    cadena += val_.primitivo + " "
+                }
+                valor = cadena
+                //cadena += valor.
+            }
             linea = ts.getSimbolo(clave).linea
             columna = ts.getSimbolo(clave).columna
             tabla_array.push(new simbolo(simbol,tipo,identificador,valor,linea,columna))

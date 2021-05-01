@@ -1,10 +1,18 @@
+import { RecursiveTemplateAstVisitor } from "@angular/compiler";
+
 export enum tipo {
     ENTERO,
     DOUBLE,
     BOOLEANO,
     CARACTER,
     CADENA,
-    VOID
+    VOID,
+    VECTOR,
+    VECTOR_INT,
+    VECTOR_DOUBLE,
+    VECTOR_BOOLEAN,
+    VECTOR_STRING,
+    VECTOR_CHAR
 }
 export default class Tipo {
     public type: tipo;
@@ -27,6 +35,16 @@ export default class Tipo {
             return tipo.BOOLEANO
         } else if (stype == 'VOID'){
             return tipo.VOID
+        } else if (stype == 'VECTOR_INT'){
+            return tipo.VECTOR_INT
+        } else if (stype == 'VECTOR_DOUBLE'){
+            return tipo.VECTOR_DOUBLE
+        } else if (stype == 'VECTOR_BOOLEAN'){
+            return tipo.VECTOR_DOUBLE
+        } else if (stype == 'VECTOR_STRING'){
+            return tipo.VECTOR_DOUBLE
+        } else if (stype == 'VECTOR_CHAR'){
+            return tipo.VECTOR_DOUBLE
         }
     }
 

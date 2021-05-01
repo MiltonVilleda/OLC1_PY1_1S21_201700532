@@ -21,16 +21,22 @@ export default class asignacion implements instruccion {
     ejecutar(controlador: controlador, ts: tablaSimbolos) {
         if (ts.existe(this.identificador)) {
             let valor = this.valor.getValor(controlador, ts);
-            let variable = ts.getSimbolo(this.identificador);
-            let tipo_var = this.getTipo_(valor);
-            let tipo_ = variable.tipo.type;
-            if (tipo_ == tipo_var || (tipo_ == tipo.CARACTER && tipo_var == tipo.CADENA && valor.lenght == 1) || (tipo_ == tipo.DOUBLE && tipo_var == tipo.ENTERO && !valor.toString().includes('.')) || tipo_ == tipo.CADENA && tipo_var == tipo.CARACTER){
-                console.log("ASIGNACION, TIPO IGUAL");
-                ts.getSimbolo(this.identificador).setValor(valor);
-            } else {
-                let error = new errores('Semantico', `La variable ${variable.identificador} no es compatible con el valor ${valor}`, this.linea, this.columna);
-                controlador.errores.push(error);
-                controlador.appEnd(`Error semantico en la linea ${this.linea} en la columna ${this.columna}: La variable ${variable.identificador} no es compatible con el valor ${valor}`);
+            if (valor != null) {
+                let variable = ts.getSimbolo(this.identificador);
+                let tipo_val = this.valor.getTipo(controlador,ts)
+                let tipo_ = variable.tipo.type;
+                if (
+                    tipo_ == tipo_val || 
+                    (tipo_ == tipo.CARACTER && tipo_val == tipo.CADENA && valor.lenght == 1) || 
+                    (tipo_ == tipo.DOUBLE && tipo_val == tipo.ENTERO) ||
+                    (tipo_ == tipo.ENTERO && tipo_val == tipo.DOUBLE && !valor.toString().includes('.')) ||
+                    tipo_ == tipo.CADENA && tipo_val == tipo.CARACTER) {
+                    ts.getSimbolo(this.identificador).setValor(valor);
+                } else {
+                    let error = new errores('Semantico', `La variable ${variable.identificador} no es compatible con el valor ${valor}`, this.linea, this.columna);
+                    controlador.errores.push(error);
+                    controlador.appEnd(`Error semantico en la linea ${this.linea} en la columna ${this.columna}: La variable ${variable.identificador} no es compatible con el valor ${valor}`);
+                }
             }
         } else {
             let error = new errores('Semantico', `La variable ${this.identificador} no ha sido declarada`, this.linea, this.columna);
@@ -39,23 +45,23 @@ export default class asignacion implements instruccion {
         }
     }
     recorrer(): nodo {
-        let padre = new nodo("asignacion","")
-        let hijo = new nodo(this.identificador,"")
-        hijo.addHijo(this.valor.recorrer())
-        padre.addHijo(hijo)
+        let padre = new nodo("asignacion", "")
+        padre.addHijo(new nodo(this.identificador, ""))
+        padre.addHijo(new nodo("=", ""))
+        padre.addHijo(this.valor.recorrer())
         return padre
     }
-    getTipo_(valor){
-        if (typeof valor === 'number' && valor.toString().includes('.')){
+    getTipo_(valor) {
+        if (typeof valor === 'number' && valor.toString().includes('.')) {
             return tipo.DOUBLE
-        } else if (typeof valor === 'number'){
+        } else if (typeof valor === 'number') {
             return tipo.ENTERO
-        } else if (typeof valor === 'string' && valor.length == 1){
+        } else if (typeof valor === 'string' && valor.length == 1) {
             return tipo.CARACTER
-        } else if (typeof valor === 'string'){
+        } else if (typeof valor === 'string') {
             return tipo.CADENA
-        } else if (typeof valor === 'boolean'){
+        } else if (typeof valor === 'boolean') {
             return tipo.BOOLEANO
-        } 
+        }
     }
 }

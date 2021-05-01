@@ -1,14 +1,12 @@
-import { THIS_EXPR } from "@angular/compiler/src/output/output_ast";
-import { Validators } from "@angular/forms";
-import { Console } from "node:console";
 import errores from "../ast/errores";
 import nodo from "../ast/nodo";
 import controlador from "../controlador";
-import primitivo from "../expresiones/primitivo";
 import { instruccion } from "../interfaces/instruccion";
 import simbolos from "../tablaSimbolos/simbolos";
 import { tablaSimbolos } from "../tablaSimbolos/tablaSimbolos";
 import Tipo, { tipo } from "../tablaSimbolos/tipo";
+import { expresion } from "../interfaces/expresion";
+import vector_ from "../expresiones/vector_";
 
 export default class declaracion implements instruccion {
     public type: Tipo;
@@ -35,11 +33,37 @@ export default class declaracion implements instruccion {
             }
             if (variable.valor != null) {
                 let valor = variable.valor.getValor(controlador, ts);
-                let tipo_ = variable.valor.getTipo(controlador,ts);
-                if (tipo_ == this.type.type || (tipo_ == tipo.CARACTER && this.type.type == tipo.CADENA && valor.lenght == 1) || (tipo_ == tipo.DOUBLE && this.type.type == tipo.ENTERO && !valor.toString().includes('.')) || this.type.type == tipo.CADENA && tipo_ == tipo.CARACTER){
+                let tipo_ = variable.valor.getTipo(controlador, ts);
+                if (tipo_ == this.type.type ||
+                    (this.type.type == tipo.CARACTER && tipo_ == tipo.CADENA && valor.lenght == 1) ||
+                    (tipo_ == tipo.DOUBLE && this.type.type == tipo.ENTERO && !valor.toString().includes('.')) ||
+                    (this.type.type == tipo.CADENA && tipo_ == tipo.CARACTER)){
+                    let newSimbolo = new simbolos(variable.simbolo, this.type, variable.identificador, valor, this.linea, this.columna);
+                    ts.agregar(variable.identificador, newSimbolo);
+                } else if ((this.type.type == tipo.ENTERO && tipo_ == tipo.VECTOR_INT)) {
+                    this.type = new Tipo('VECTOR_INT')
+                    let newSimbolo = new simbolos(variable.simbolo, this.type, variable.identificador, valor, this.linea, this.columna);
+                    ts.agregar(variable.identificador, newSimbolo);
+                } else if ((this.type.type == tipo.DOUBLE && tipo_ == tipo.VECTOR_DOUBLE)) {
+                    this.type = new Tipo('VECTOR_DOUBLE')
+                    let newSimbolo = new simbolos(variable.simbolo, this.type, variable.identificador, valor, this.linea, this.columna);
+                    ts.agregar(variable.identificador, newSimbolo);
+                } else if ((this.type.type == tipo.BOOLEANO && tipo_ == tipo.VECTOR_BOOLEAN)) {
+                    this.type = new Tipo('VECTOR_BOOLEAN')
+                    let newSimbolo = new simbolos(variable.simbolo, this.type, variable.identificador, valor, this.linea, this.columna);
+                    ts.agregar(variable.identificador, newSimbolo);
+                } else if ((this.type.type == tipo.CADENA && tipo_ == tipo.VECTOR_STRING)) {
+                    this.type = new Tipo('VECTOR_STRING')
+                    let newSimbolo = new simbolos(variable.simbolo, this.type, variable.identificador, valor, this.linea, this.columna);
+                    ts.agregar(variable.identificador, newSimbolo);
+                } else if ((this.type.type == tipo.CARACTER && tipo_ == tipo.VECTOR_CHAR)) {
+                    this.type = new Tipo('VECTOR_CHAR')
                     let newSimbolo = new simbolos(variable.simbolo, this.type, variable.identificador, valor, this.linea, this.columna);
                     ts.agregar(variable.identificador, newSimbolo);
                 } else {
+                    console.log("ERROR DECLARACION")
+                    console.log(this.type.type)
+                    console.log(tipo_)
                     let error = new errores('Semantico', `La variable ${variable.identificador} no es compatible con el valor ${valor}`, this.linea, this.columna);
                     controlador.errores.push(error);
                     controlador.appEnd(`Error semantico en la linea ${this.linea} en la columna ${this.columna}: La variable ${variable.identificador} no es compatible con el valor ${valor}`);
@@ -52,16 +76,26 @@ export default class declaracion implements instruccion {
     }
     recorrer(): nodo {
         let padre = new nodo('declaracion', "")
-        let nhijo = new nodo(this.type.stype,"")
+        let nhijo = new nodo(this.type.stype, "")
         padre.addHijo(nhijo)
-        for (let nsimbolo of this.lista_simbolos){
-            if (nsimbolo.simbolo == 1){
-                let hijo = new nodo(nsimbolo.identificador,"")
-                if (nsimbolo.valor != null){
-                    hijo.addHijo(nsimbolo.valor.recorrer())
+        for (let nsimbolo of this.lista_simbolos) {
+            if (nsimbolo.simbolo == 1) {
+                let hijo = new nodo(nsimbolo.identificador, "")
+                if (nsimbolo.valor != null) {
                     padre.addHijo(hijo)
+                    padre.addHijo(new nodo("=", ""))
+                    padre.addHijo(nsimbolo.valor.recorrer())
                 } else {
                     padre.addHijo(hijo)
+                }
+            } else if (nsimbolo.simbolo == 4){
+                let hijo = new nodo(nsimbolo.identificador, "")
+                padre.addHijo(hijo)
+                padre.addHijo(new nodo("=",""))
+                let vector:vector_ = nsimbolo.valor
+                for (let exp of vector.valor){
+                    let exp_axu = exp as expresion
+                    padre.addHijo(exp_axu.recorrer())
                 }
             }
         }
