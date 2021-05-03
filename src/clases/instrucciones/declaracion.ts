@@ -6,7 +6,7 @@ import simbolos from "../tablaSimbolos/simbolos";
 import { tablaSimbolos } from "../tablaSimbolos/tablaSimbolos";
 import Tipo, { tipo } from "../tablaSimbolos/tipo";
 import { expresion } from "../interfaces/expresion";
-import vector_ from "../expresiones/vector_";
+import vector_ from "../estructuras/vector_";
 
 export default class declaracion implements instruccion {
     public type: Tipo;
@@ -37,27 +37,13 @@ export default class declaracion implements instruccion {
                 if (tipo_ == this.type.type ||
                     (this.type.type == tipo.CARACTER && tipo_ == tipo.CADENA && valor.lenght == 1) ||
                     (tipo_ == tipo.DOUBLE && this.type.type == tipo.ENTERO && !valor.toString().includes('.')) ||
-                    (this.type.type == tipo.CADENA && tipo_ == tipo.CARACTER)){
-                    let newSimbolo = new simbolos(variable.simbolo, this.type, variable.identificador, valor, this.linea, this.columna);
-                    ts.agregar(variable.identificador, newSimbolo);
-                } else if ((this.type.type == tipo.ENTERO && tipo_ == tipo.VECTOR_INT)) {
-                    this.type = new Tipo('VECTOR_INT')
-                    let newSimbolo = new simbolos(variable.simbolo, this.type, variable.identificador, valor, this.linea, this.columna);
-                    ts.agregar(variable.identificador, newSimbolo);
-                } else if ((this.type.type == tipo.DOUBLE && tipo_ == tipo.VECTOR_DOUBLE)) {
-                    this.type = new Tipo('VECTOR_DOUBLE')
-                    let newSimbolo = new simbolos(variable.simbolo, this.type, variable.identificador, valor, this.linea, this.columna);
-                    ts.agregar(variable.identificador, newSimbolo);
-                } else if ((this.type.type == tipo.BOOLEANO && tipo_ == tipo.VECTOR_BOOLEAN)) {
-                    this.type = new Tipo('VECTOR_BOOLEAN')
-                    let newSimbolo = new simbolos(variable.simbolo, this.type, variable.identificador, valor, this.linea, this.columna);
-                    ts.agregar(variable.identificador, newSimbolo);
-                } else if ((this.type.type == tipo.CADENA && tipo_ == tipo.VECTOR_STRING)) {
-                    this.type = new Tipo('VECTOR_STRING')
-                    let newSimbolo = new simbolos(variable.simbolo, this.type, variable.identificador, valor, this.linea, this.columna);
-                    ts.agregar(variable.identificador, newSimbolo);
-                } else if ((this.type.type == tipo.CARACTER && tipo_ == tipo.VECTOR_CHAR)) {
-                    this.type = new Tipo('VECTOR_CHAR')
+                    (this.type.type == tipo.CADENA && tipo_ == tipo.CARACTER) ||
+                    (this.type.type == tipo.VECTOR_INT && tipo_ == tipo.ENTERO) ||
+                    (this.type.type == tipo.VECTOR_DOUBLE && tipo_ == tipo.DOUBLE) ||
+                    (this.type.type == tipo.VECTOR_BOOLEAN && tipo_ == tipo.BOOLEANO) ||
+                    (this.type.type == tipo.VECTOR_CHAR && tipo_ == tipo.CARACTER) ||
+                    (this.type.type == tipo.VECTOR_STRING && tipo_ == tipo.CADENA)
+                    ){
                     let newSimbolo = new simbolos(variable.simbolo, this.type, variable.identificador, valor, this.linea, this.columna);
                     ts.agregar(variable.identificador, newSimbolo);
                 } else {
@@ -89,14 +75,16 @@ export default class declaracion implements instruccion {
                     padre.addHijo(hijo)
                 }
             } else if (nsimbolo.simbolo == 4){
-                let hijo = new nodo(nsimbolo.identificador, "")
-                padre.addHijo(hijo)
+                //let hijo = 
+                padre.addHijo(new nodo(nsimbolo.identificador, ""))
                 padre.addHijo(new nodo("=",""))
+                padre.addHijo(nsimbolo.valor.recorrer())
+                /*
                 let vector:vector_ = nsimbolo.valor
                 for (let exp of vector.valor){
                     let exp_axu = exp as expresion
                     padre.addHijo(exp_axu.recorrer())
-                }
+                }*/
             }
         }
         return padre

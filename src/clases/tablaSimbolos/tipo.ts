@@ -40,11 +40,11 @@ export default class Tipo {
         } else if (stype == 'VECTOR_DOUBLE'){
             return tipo.VECTOR_DOUBLE
         } else if (stype == 'VECTOR_BOOLEAN'){
-            return tipo.VECTOR_DOUBLE
+            return tipo.VECTOR_BOOLEAN
         } else if (stype == 'VECTOR_STRING'){
-            return tipo.VECTOR_DOUBLE
+            return tipo.VECTOR_STRING
         } else if (stype == 'VECTOR_CHAR'){
-            return tipo.VECTOR_DOUBLE
+            return tipo.VECTOR_CHAR
         }
     }
 

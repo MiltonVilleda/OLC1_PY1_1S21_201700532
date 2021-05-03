@@ -4,7 +4,8 @@ import controlador from "../controlador";
 import { expresion } from "../interfaces/expresion";
 import { tablaSimbolos } from "../tablaSimbolos/tablaSimbolos";
 import Tipo, { tipo } from "../tablaSimbolos/tipo";
-import primitivo from "./primitivo";
+//import primitivo from '../expresiones/primitivo';
+import primitivo from "../expresiones/primitivo";
 
 export default class vector_ implements expresion {
     //tipo CORA CORC ID IGUAL NEW tipo CORA e CORC
@@ -21,17 +22,7 @@ export default class vector_ implements expresion {
         this.columna = columna
     }
     getTipo(controlador: controlador, ts: tablaSimbolos) {
-        if (this.tipo_.type == tipo.ENTERO) {
-            return tipo.VECTOR_INT
-        } else if (this.tipo_.type == tipo.DOUBLE) {
-            return tipo.VECTOR_DOUBLE
-        } else if (this.tipo_.type == tipo.BOOLEANO) {
-            return tipo.VECTOR_BOOLEAN
-        } else if (this.tipo_.type == tipo.CADENA) {
-            return tipo.VECTOR_STRING
-        } else if (this.tipo_.type == tipo.CARACTER) {
-            return tipo.VECTOR_CHAR
-        }
+        return this.tipo_.type
     }
     getValor(controlador: controlador, ts: tablaSimbolos) {
         if (this.size != null) {
@@ -40,7 +31,7 @@ export default class vector_ implements expresion {
             let new_val: primitivo
             if (tipo_size == tipo.ENTERO || tipo_size == tipo.DOUBLE) {
                 this.valor = new Array<expresion>()
-                if (this.tipo_.type == tipo.ENTERO || this.tipo_.type == tipo.DOUBLE) {
+                if (this.tipo_.type == tipo.DOUBLE || this.tipo_.type == tipo.ENTERO) {
                     new_val = new primitivo(0, 0, 0)
                 } else if (this.tipo_.type == tipo.BOOLEANO) {
                     new_val = new primitivo(true, 0, 0)
@@ -50,6 +41,8 @@ export default class vector_ implements expresion {
                 for (let i = 0; i < size_aux; i++) {
                     this.valor.push(new_val)
                 }
+                console.log("VALOR VECTOR")
+                console.log(this.valor)
                 return this.valor
             }
         } else {
@@ -60,7 +53,12 @@ export default class vector_ implements expresion {
                 console.log("TIPOS EN EL VECTOR")
                 console.log(this.tipo_.type)
                 console.log(val.getTipo(controlador, ts))
-                if ((this.tipo_.type == val.getTipo(controlador, ts)) || (this.tipo_.type == tipo.ENTERO && val.getTipo(controlador, ts) == tipo.DOUBLE && !val_.toString().includes('.'))) {
+                if ((this.tipo_.type == tipo.VECTOR_INT && val.getTipo(controlador, ts) == tipo.DOUBLE && !val_.toString().includes('.')) ||
+                    (this.tipo_.type == tipo.VECTOR_DOUBLE && val.getTipo(controlador, ts) == tipo.DOUBLE) ||
+                    (this.tipo_.type == tipo.VECTOR_BOOLEAN && val.getTipo(controlador, ts) == tipo.BOOLEANO) ||
+                    (this.tipo_.type == tipo.VECTOR_CHAR && val.getTipo(controlador, ts) == tipo.CARACTER) ||
+                    (this.tipo_.type == tipo.VECTOR_STRING && val.getTipo(controlador, ts) == tipo.CADENA)
+                ) {
                     new_val.push(this.valor[i])
                 } else {
                     let error = new errores('Semantico', `El valor ${val_} no se puede asignar a un vector de tipo ${this.tipo_.stype}`, this.linea, this.columna)
@@ -78,9 +76,11 @@ export default class vector_ implements expresion {
     }
     recorrer(): nodo {
         let padre = new nodo("Vector", "")
-        for (let exp of this.valor){
+        padre.addHijo(new nodo("{",""))
+        for (let exp of this.valor) {
             padre.addHijo(exp.recorrer())
         }
+        padre.addHijo(new nodo("}",""))
         return padre
     }
 }

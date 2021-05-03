@@ -139,15 +139,18 @@ caracter    (\'({escape}|{aceptacion2})*\')
     const round_ = require('../clases/expresiones/round_')
     const tostring_ = require('../clases/expresiones/tostring_')
     const typeof_ = require('../clases/expresiones/typeof_')
+    const vector_ = require('../clases/estructuras/vector_')
+
     const for_ = require('../clases/instrucciones/sentenciasCiclica/for_')
     const casteo = require('../clases/expresiones/casteo')
-    const vector_ = require('../clases/expresiones/vector_')
+    const accesoV = require('../clases/instrucciones/accesoV')
+    const asignacionV = require('../clases/instrucciones/asignacionV')
 %}
 
 /* Precedencia de operadores */
 
 %right 'INTERROGAC'
-//%left 'PARC'
+
 %left 'OR'
 %left 'AND'
 %right 'NOT'
@@ -199,8 +202,9 @@ sent_if : IF PARA e PARC LLAVEA instrucciones LLAVEC        { $$ = new if_.defau
 sent_while : WHILE PARA e PARC LLAVEA instrucciones LLAVEC      { $$ = new while_.default($3,$6,@1.first_line,@1.last_column) }
             ;
 
-sent_for : FOR PARA asignacion e PYC actualizacion PARC LLAVEA instrucciones LLAVEC
-            //constructor(asig_dec, condicion, lista_instrucciones, linea, columna)
+sent_for : FOR PARA declaracion e PYC actualizacion PARC LLAVEA instrucciones LLAVEC
+            { $$ = new for_.default($3,$4,$6,$9,@1.first_line,@1.last_column) }
+        | FOR PARA asignacion e PYC actualizacion PARC LLAVEA instrucciones LLAVEC
             { $$ = new for_.default($3,$4,$6,$9,@1.first_line,@1.last_column) }
         ;
 
@@ -231,31 +235,22 @@ lista_exp : lista_exp COMA e        { $$ = $1; $$.push($3); }
             ;
 
 declaracion : tipo lista_simbolos PYC       {$$ = new declaracion.default($1,$2,@1.first_line,@1.first_column); }
-            //1     2   3     4   5   6     7   8   9  10   11
-            | tipo CORA CORC ID IGUAL NEW tipo CORA e CORC PYC  { $$ = new declaracion.default($1,
+            | tipo_vector ID IGUAL NEW tipo CORA e CORC PYC  { $$ = new declaracion.default($1,
             new Array(
-                new simbolos.default(4,$7,$4,
-                    //new primitivo.default(1,0,0)
-                    new vector_.default($7,$9,[],@6.first_line,@6.last_column)
+                new simbolos.default(4,$5,$2,
+                    new vector_.default($5,$7,[],@7.first_line,@7.last_column)
                 )
-            )
-            ,@1.first_line,@1.last_column) }
-            //DECLARACION constructor(tipo, lista_simbolos, linea, columna) {
-            //SIMBOLOS constructor(simbolo: number, tipo: tipo, identificador: string, valor: any, linea: number, columna: number,lista_param?, metodo?) {
-            //VECTOR constructor(tipo,size, valor) {
-            //int   [    ]    x    = {0,0};
-            //1     2   3     4   5   6      7   8    9
-            | tipo CORA CORC ID IGUAL e PYC                     { $$ = new declaracion.default($1,
+            ),@1.first_line,@1.last_column) }
+            | tipo_vector ID IGUAL e PYC                     { $$ = new declaracion.default($1,
             new Array(
-                new simbolos.default(4,$1,$4,
-                    //new primitivo.default(1,0,0)
-                    new vector_.default($1,null,$6,@6.first_line,@6.last_column)
+                new simbolos.default(4,$1,$2,
+                    new vector_.default($1,null,$4,@4.first_line,@4.last_column)
                 )
-            )
-            ,@1.first_line,@1.last_column) }
+            ),@1.first_line,@1.last_column) }
             ;
 
-asignacion : ID IGUAL e PYC     { $$ = new asignacion.default($1,$3,@1.first_line,@1.first_column); }
+asignacion : ID IGUAL e PYC                 { $$ = new asignacion.default($1,$3,@1.first_line,@1.first_column); }
+            | ID CORA e CORC IGUAL e PYC    { $$ = new asignacionV.default($1,$3,$6,@1.first_line,@1.last_column) }
             ;
 
 tipo : INT      { $$ = new tipo.default('ENTERO'); }
@@ -265,19 +260,18 @@ tipo : INT      { $$ = new tipo.default('ENTERO'); }
     | BOOLEAN   { $$ = new tipo.default('BOOLEAN'); }
     ;
 
+tipo_vector : INT CORA CORC         { $$ = new tipo.default('VECTOR_INT'); }
+            | DOUBLE CORA CORC      { $$ = new tipo.default('VECTOR_DOUBLE'); }
+            | STRING CORA CORC      { $$ = new tipo.default('VECTOR_STRING'); }
+            | CHAR CORA CORC        { $$ = new tipo.default('VECTOR_CHAR'); }
+            | BOOLEAN CORA CORC     { $$ = new tipo.default('VECTOR_BOOLEAN'); }
+    ;
+
 lista_simbolos : lista_simbolos COMA ID                 { $$ = $1; $$.push(new simbolos.default(1,null,$3,null)); }
                 | lista_simbolos COMA ID IGUAL e        { $$ = $1; $$.push(new simbolos.default(1,null,$3,$5)); }
                 | ID                { $$ = new Array(); $$.push(new simbolos.default(1,null,$1,null)); }
                 | ID IGUAL e        { $$ = new Array(); $$.push(new simbolos.default(1,null,$1,$3)); }
                 ;
-
-vector : ID IGUAL NEW tipo CORA e CORC    { $$ = new Array(); $$.push(
-                                            new simbolos.default(4,$4,$1,new vector_.default($4,$6,[]))
-                                        ) }
-        | ID IGUAL e                    { $$ = new Array(); $$.push(
-                                            new simbolos.default(4,null,$1,new vector_.default(null,0,$3))
-                                        ) }
-        ;*/
 
 e : e MAS e                     { $$ = new aritmetica.default($1,'+', $3, @1.first_line, @1.last_column,false); }
     | e MENOS e                 { $$ = new aritmetica.default($1,'-', $3, @1.first_line, @1.last_column,false); }
@@ -302,9 +296,9 @@ e : e MAS e                     { $$ = new aritmetica.default($1,'+', $3, @1.fir
     | TRUE                      { $$ = new primitivo.default(true, @1.first_line, $1.last_column); }
     | FALSE                     { $$ = new primitivo.default(false, @1.first_line, $1.last_column); }
     | ID                        { $$ = new identificador.default($1,@1.first_line,@1.last_column) }
-    | e INTERROGAC e DOSPTN e   { $$ = new ternario.default($1,$3,$5,@1.first_line,@1.last_column) }
     | ID INCRE                  { $$ = new aritmetica.default(new identificador.default($1,@1.first_line,@1.last_column),'+',new primitivo.default(1,@1.first_line,@1.last_column),@1.first_line,@1.last_column,false) }
     | ID DECRE                  { $$ = new aritmetica.default(new identificador.default($1,@1.first_line,@1.last_column),'-',new primitivo.default(1,@1.first_line,@1.last_column),@1.first_line,@1.last_column,false) }
+    | e INTERROGAC e DOSPTN e   { $$ = new ternario.default($1,$3,$5,@1.first_line,@1.last_column) }
     | llamada                   { $$ = $1 }
     | TOLOWER PARA e PARC       { $$ = new toLowerUpper.default($3,@1.first_line,@1.last_column,true) }
     | TOUPPER PARA e PARC       { $$ = new toLowerUpper.default($3,@1.first_line,@1.last_column,false) }
@@ -315,6 +309,7 @@ e : e MAS e                     { $$ = new aritmetica.default($1,'+', $3, @1.fir
     | LLAVEA lista_exp LLAVEC   { $$ = $2 }
     | TYPEOF PARA e PARC        { $$ = new typeof_.default($3,@1.first_line,@1.last_column) }
     | TOSTRING PARA e PARC        { $$ = new tostring_.default($3,@1.first_line,@1.last_column) }
+    | ID CORA e CORC            { $$ = new accesoV.default(new identificador.default($1,@1.first_line,@1.last_column),$3,@1.first_line,@1.last_column) }
     ;
 
 /*ee: e PARC               { $$ = $1; }

@@ -1,4 +1,3 @@
-import { type } from "node:os";
 import nodo from "../../ast/nodo";
 import controlador from "../../controlador";
 import { expresion } from "../../interfaces/expresion";
@@ -14,7 +13,7 @@ export default class for_ implements instruccion {
     public lista_instrucciones: Array<instruccion>
     public linea: number
     public columna: number
-    constructor(asig_dec, condicion,actualizacion, lista_instrucciones, linea, columna) {
+    constructor(asig_dec, condicion, actualizacion, lista_instrucciones, linea, columna) {
         this.asig_dec = asig_dec
         this.condicion = condicion
         this.actualizacion = actualizacion
@@ -23,36 +22,42 @@ export default class for_ implements instruccion {
         this.columna = columna
     }
     ejecutar(controlador: controlador, ts: tablaSimbolos) {
-        //this.condicion.getValor(controlador,ts)
-        console.log("ATRIBUTOS")
-        console.log(this.asig_dec)
-        console.log(this.condicion)
-        console.log(this.actualizacion)
-        let valor_condicion = this.condicion.getValor(controlador, ts)
-        if (typeof valor_condicion === 'boolean') {
-            let ts_local = new tablaSimbolos(ts)
-            this.asig_dec.ejecutar(controlador,ts_local)
-            console.log("VALOR CONDICION:")
-            console.log(this.condicion.getValor(controlador,ts_local))
+        let ts_aux = new tablaSimbolos(ts)
+        this.asig_dec.ejecutar(controlador, ts_aux)
+        let val_condicion = this.condicion.getValor(controlador, ts_aux)
+        if (typeof val_condicion === 'boolean') {
             siguiente:
-            while (this.condicion.getValor(controlador,ts_local)){
-                for (let instruccion of this.lista_instrucciones){
+            while (this.condicion.getValor(controlador, ts_aux)) {
+                let ts_local = new tablaSimbolos(ts_aux)
+                for (let instruccion of this.lista_instrucciones) {
                     let res = instruccion.ejecutar(controlador, ts_local)
                     if (instruccion instanceof break_ || res instanceof break_) {
                         return res
                     }
-                    if (instruccion instanceof continue_ || res instanceof continue_){
-                        continue siguiente;
+                    if (instruccion instanceof continue_ || res instanceof continue_) {
+                        continue siguiente
                     }
                 }
-                this.actualizacion.ejecutar(controlador,ts_local)
-                continue siguiente;
+                this.actualizacion.ejecutar(controlador, ts_local)
+                continue siguiente
             }
         }
-        return null
     }
     recorrer(): nodo {
-        throw new Error("Method not implemented.");
+        let padre = new nodo("For","")
+        let ncondicion = new nodo("Condicion","")
+        ncondicion.addHijo(this.condicion.recorrer())
+        let nactua = new nodo("Actualizacion","")
+        nactua.addHijo(this.actualizacion.recorrer())
+        let instrucciones = new nodo ("Instrucciones","")
+        for (let inst of this.lista_instrucciones){
+            instrucciones.addHijo(inst.recorrer())
+        }
+        padre.addHijo(this.asig_dec.recorrer())
+        padre.addHijo(ncondicion)
+        padre.addHijo(nactua)
+        padre.addHijo(instrucciones)
+        return padre
     }
 
 }

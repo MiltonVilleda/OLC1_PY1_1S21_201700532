@@ -51,17 +51,4 @@ export default class asignacion implements instruccion {
         padre.addHijo(this.valor.recorrer())
         return padre
     }
-    getTipo_(valor) {
-        if (typeof valor === 'number' && valor.toString().includes('.')) {
-            return tipo.DOUBLE
-        } else if (typeof valor === 'number') {
-            return tipo.ENTERO
-        } else if (typeof valor === 'string' && valor.length == 1) {
-            return tipo.CARACTER
-        } else if (typeof valor === 'string') {
-            return tipo.CADENA
-        } else if (typeof valor === 'boolean') {
-            return tipo.BOOLEANO
-        }
-    }
 }
