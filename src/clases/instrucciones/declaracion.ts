@@ -42,7 +42,12 @@ export default class declaracion implements instruccion {
                     (this.type.type == tipo.VECTOR_DOUBLE && tipo_ == tipo.DOUBLE) ||
                     (this.type.type == tipo.VECTOR_BOOLEAN && tipo_ == tipo.BOOLEANO) ||
                     (this.type.type == tipo.VECTOR_CHAR && tipo_ == tipo.CARACTER) ||
-                    (this.type.type == tipo.VECTOR_STRING && tipo_ == tipo.CADENA)
+                    (this.type.type == tipo.VECTOR_STRING && tipo_ == tipo.CADENA) ||
+                    (this.type.type == tipo.LISTA_INT && tipo_ == tipo.ENTERO) ||
+                    (this.type.type == tipo.LISTA_DOUBLE && tipo_ == tipo.DOUBLE) ||
+                    (this.type.type == tipo.LISTA_BOOLEAN && tipo_ == tipo.BOOLEANO) ||
+                    (this.type.type == tipo.LISTA_CHAR && tipo_ == tipo.CARACTER) ||
+                    (this.type.type == tipo.LISTA_STRING && tipo_ == tipo.CADENA)
                     ){
                     let newSimbolo = new simbolos(variable.simbolo, this.type, variable.identificador, valor, this.linea, this.columna);
                     ts.agregar(variable.identificador, newSimbolo);
@@ -75,16 +80,13 @@ export default class declaracion implements instruccion {
                     padre.addHijo(hijo)
                 }
             } else if (nsimbolo.simbolo == 4){
-                //let hijo = 
                 padre.addHijo(new nodo(nsimbolo.identificador, ""))
                 padre.addHijo(new nodo("=",""))
                 padre.addHijo(nsimbolo.valor.recorrer())
-                /*
-                let vector:vector_ = nsimbolo.valor
-                for (let exp of vector.valor){
-                    let exp_axu = exp as expresion
-                    padre.addHijo(exp_axu.recorrer())
-                }*/
+            } else if (nsimbolo.simbolo == 5){
+                padre.addHijo(new nodo(nsimbolo.identificador, ""))
+                padre.addHijo(new nodo("=",""))
+                padre.addHijo(nsimbolo.valor.recorrer())
             }
         }
         return padre

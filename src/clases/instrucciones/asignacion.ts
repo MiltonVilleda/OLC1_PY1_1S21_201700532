@@ -23,16 +23,21 @@ export default class asignacion implements instruccion {
             let valor = this.valor.getValor(controlador, ts);
             if (valor != null) {
                 let variable = ts.getSimbolo(this.identificador);
-                let tipo_val = this.valor.getTipo(controlador,ts)
+                let tipo_val = this.valor.getTipo(controlador, ts)
                 let tipo_ = variable.tipo.type;
                 if (
-                    tipo_ == tipo_val || 
-                    (tipo_ == tipo.CARACTER && tipo_val == tipo.CADENA && valor.lenght == 1) || 
+                    tipo_ == tipo_val ||
+                    (tipo_ == tipo.CARACTER && tipo_val == tipo.CADENA && valor.lenght == 1) ||
                     (tipo_ == tipo.DOUBLE && tipo_val == tipo.ENTERO) ||
                     (tipo_ == tipo.ENTERO && tipo_val == tipo.DOUBLE && !valor.toString().includes('.')) ||
-                    tipo_ == tipo.CADENA && tipo_val == tipo.CARACTER) {
+                    (tipo_ == tipo.CADENA && tipo_val == tipo.CARACTER) 
+                    //|| (tipo_ == tipo.LISTA_CHAR && )
+                ) {
                     ts.getSimbolo(this.identificador).setValor(valor);
                 } else {
+                    console.log("ERROR ASIGNACION")
+                    console.log(tipo_)
+                    console.log(tipo_val)
                     let error = new errores('Semantico', `La variable ${variable.identificador} no es compatible con el valor ${valor}`, this.linea, this.columna);
                     controlador.errores.push(error);
                     controlador.appEnd(`Error semantico en la linea ${this.linea} en la columna ${this.columna}: La variable ${variable.identificador} no es compatible con el valor ${valor}`);

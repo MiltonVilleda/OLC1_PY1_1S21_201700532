@@ -1,3 +1,4 @@
+import errores from "src/clases/ast/errores";
 import nodo from "src/clases/ast/nodo";
 import controlador from "src/clases/controlador";
 import { expresion } from "src/clases/interfaces/expresion";
@@ -51,6 +52,10 @@ export default class if_ implements instruccion {
                     }
                 }
             }
+        } else {
+            let error = new errores('Semantico', `La expresion ${valor_condicion} no es de tipo boolean`, this.linea, this.columna)
+            controlador.errores.push(error);
+            controlador.appEnd(`Error semantico en la linea ${this.linea} en la columna ${this.columna}: La expresion ${valor_condicion} no es de tipo boolean`);
         }
         return null
     }

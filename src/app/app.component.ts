@@ -38,7 +38,7 @@ export class AppComponent {
       this.tabla2 = ejecutar.ts
       this.errores2 = ejecutar.errores
     }
-    this.recorrer()
+    //this.recorrer()
     /*
     let ts = new tablaSimbolos(null);
     let cont = new controlador();

@@ -28,8 +28,26 @@ export default class typeof_ implements expresion {
             return "char"
         } else if (this.expresion.getTipo(controlador, ts) == tipo.CADENA) {
             return "string"
-        } else if (this.expresion.getTipo(controlador, ts) == tipo.BOOLEANO) {
-            return "boolean"
+        } else if (this.expresion.getTipo(controlador, ts) == tipo.VECTOR_BOOLEAN) {
+            return "vector boolean"
+        } else if (this.expresion.getTipo(controlador, ts) == tipo.VECTOR_CHAR) {
+            return "vector char"
+        } else if (this.expresion.getTipo(controlador, ts) == tipo.VECTOR_DOUBLE) {
+            return "vector double"
+        } else if (this.expresion.getTipo(controlador, ts) == tipo.VECTOR_INT) {
+            return "vector int"
+        } else if (this.expresion.getTipo(controlador, ts) == tipo.VECTOR_STRING) {
+            return "vector string"
+        } else if (this.expresion.getTipo(controlador, ts) == tipo.LISTA_BOOLEAN) {
+            return "lista boolean"
+        } else if (this.expresion.getTipo(controlador, ts) == tipo.LISTA_CHAR) {
+            return "lista char"
+        } else if (this.expresion.getTipo(controlador, ts) == tipo.LISTA_DOUBLE) {
+            return "lista double"
+        } else if (this.expresion.getTipo(controlador, ts) == tipo.LISTA_INT) {
+            return "lista int"
+        } else if (this.expresion.getTipo(controlador, ts) == tipo.LISTA_STRING) {
+            return "lista string"
         } else {
             let error = new errores('Semantico', `No se puede obtener el tipo de ${valor}`, this.linea, this.columna)
             controlador.errores.push(error);

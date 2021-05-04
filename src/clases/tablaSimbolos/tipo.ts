@@ -12,7 +12,12 @@ export enum tipo {
     VECTOR_DOUBLE,
     VECTOR_BOOLEAN,
     VECTOR_STRING,
-    VECTOR_CHAR
+    VECTOR_CHAR,
+    LISTA_INT,
+    LISTA_DOUBLE,
+    LISTA_BOOLEAN,
+    LISTA_STRING,
+    LISTA_CHAR
 }
 export default class Tipo {
     public type: tipo;
@@ -45,6 +50,16 @@ export default class Tipo {
             return tipo.VECTOR_STRING
         } else if (stype == 'VECTOR_CHAR'){
             return tipo.VECTOR_CHAR
+        } else if (stype == 'LISTA_INT'){
+            return tipo.LISTA_INT
+        } else if (stype == 'LISTA_DOUBLE'){
+            return tipo.LISTA_DOUBLE
+        } else if (stype == 'LISTA_BOOLEAN'){
+            return tipo.LISTA_BOOLEAN
+        } else if (stype == 'LISTA_STRING'){
+            return tipo.LISTA_STRING
+        } else if (stype == 'LISTA_CHAR'){
+            return tipo.LISTA_CHAR
         }
     }
 

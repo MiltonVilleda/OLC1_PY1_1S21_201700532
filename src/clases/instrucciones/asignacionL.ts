@@ -6,7 +6,7 @@ import { instruccion } from "../interfaces/instruccion";
 import { tablaSimbolos } from "../tablaSimbolos/tablaSimbolos";
 import { tipo } from "../tablaSimbolos/tipo";
 
-export default class asignacionV implements instruccion {
+export default class asignacionL implements instruccion{
     public id: string
     public exp: expresion
     public new_exp: expresion
@@ -25,7 +25,7 @@ export default class asignacionV implements instruccion {
         let tipo_val = this.exp.getTipo(controlador, ts)
         let val_new = this.new_exp.getValor(controlador, ts)
         let tipo_new = this.new_exp.getTipo(controlador, ts)
-        if (simbol.simbolo == 4) {
+        if (simbol.simbolo == 5) {
             if (tipo_val == tipo_new ||
                 (tipo_val == tipo.CARACTER && tipo_new == tipo.CADENA && val_new.lenght == 1) ||
                 (tipo_val == tipo.DOUBLE && tipo_new == tipo.ENTERO) ||
@@ -35,21 +35,21 @@ export default class asignacionV implements instruccion {
                     simbol.valor[posicion] = this.new_exp
                 } else {
                     console.log("ERROR")
-                    let error = new errores('Semantico', `El vector ${this.id} no tiene posicion ${posicion}`, this.linea, this.columna)
+                    let error = new errores('Semantico', `La lista ${this.id} no tiene posicion ${posicion}`, this.linea, this.columna)
                     controlador.errores.push(error);
-                    controlador.appEnd(`Error semantico en la linea ${this.linea} en la columna ${this.columna}: El vector ${this.id} no tiene posicion ${posicion}`);
+                    controlador.appEnd(`Error semantico en la linea ${this.linea} en la columna ${this.columna}: La lista ${this.id} no tiene posicion ${posicion}`);
                 }
             } else {
                 console.log("ERROR")
-                let error = new errores('Semantico', `El vector ${this.id} no es compatible con el valor ${val_new}`, this.linea, this.columna)
+                let error = new errores('Semantico', `La lista ${this.id} no es compatible con el valor ${val_new}`, this.linea, this.columna)
                 controlador.errores.push(error);
-                controlador.appEnd(`Error semantico en la linea ${this.linea} en la columna ${this.columna}: El vector ${this.id} no es compatible con el valor ${val_new}`);
+                controlador.appEnd(`Error semantico en la linea ${this.linea} en la columna ${this.columna}: La lista ${this.id} no es compatible con el valor ${val_new}`);
             }
         } else {
             console.log("ERROR")
-            let error = new errores('Semantico', `La variable ${this.id} no es un vector`, this.linea, this.columna)
+            let error = new errores('Semantico', `La variable ${this.id} no es una lista`, this.linea, this.columna)
             controlador.errores.push(error);
-            controlador.appEnd(`Error semantico en la linea ${this.linea} en la columna ${this.columna}: La variable ${this.id} no es un vector`);
+            controlador.appEnd(`Error semantico en la linea ${this.linea} en la columna ${this.columna}: La variable ${this.id} no es una lista`);
         }
     }
     recorrer(): nodo {

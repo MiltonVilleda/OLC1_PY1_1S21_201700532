@@ -73,7 +73,6 @@ export class analizador {
                     cadena += val_.primitivo + " "
                 }
                 valor = cadena
-                //cadena += valor.
             }
             linea = ts.getSimbolo(clave).linea
             columna = ts.getSimbolo(clave).columna
