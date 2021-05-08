@@ -17,45 +17,31 @@ export default class funcion extends simbolos implements instruccion {
         this.lista_instrucciones = lista_instrucciones
     }
     ejecutar(controlador: controlador, ts: tablaSimbolos) {
-        let correcto = true
         let ts_local = new tablaSimbolos(ts)
         if (this.lista_param.length > 0) {
             for (let param of this.lista_param) {
-                if (!ts_local.existe(param.identificador)) {
-                    ts_local.agregar(param.identificador, param)
-                } else {
-                    let error = new errores('Semantico', `La variable ${param.identificador} ya ha sido declarada`, this.linea, this.columna);
-                    controlador.errores.push(error);
-                    controlador.appEnd(`Error semantico en la linea ${this.linea} en la columna ${this.columna}: La variable ${param.identificador} ya ha sido declarada`);
-                    correcto = false
-                    break
-                }
+                ts_local.agregar(param.identificador, param)
             }
         }
-        if (correcto) {
-            console.log(this.lista_instrucciones)
-            for (let instruccion of this.lista_instrucciones) {
-                let res = instruccion.ejecutar(controlador, ts_local)
-                if (instruccion instanceof return_) {
-                    /*if (res != null) {
-                        return res
-                    }*/
-                    if (this.metodo){
-                        if (res == null) {
-                            return null
-                        } else {
-                            let error = new errores('Semantico', `El metodo  ${this.simbolo} no puede retornar un valor`, this.linea, this.columna);
-                            controlador.errores.push(error);
-                            controlador.appEnd(`Error semantico en la linea ${this.linea} en la columna ${this.columna}: El metodo ${this.identificador} no puede retornar un valor`);
-                        }
+        //console.log(this.lista_instrucciones)
+        for (let instruccion of this.lista_instrucciones) {
+            let res = instruccion.ejecutar(controlador, ts_local)
+            if (instruccion instanceof return_ || res != null) {
+                if (this.metodo) {
+                    if (res == null) {
+                        return null
                     } else {
-                        if (res != null){
-                            return res
-                        } else {
-                            let error = new errores('Semantico', `El metodo  ${this.simbolo} no puede retornar null`, this.linea, this.columna);
-                            controlador.errores.push(error);
-                            controlador.appEnd(`Error semantico en la linea ${this.linea} en la columna ${this.columna}: El metodo ${this.identificador} no puede null`);
-                        }
+                        let error = new errores('Semantico', `El metodo  ${this.simbolo} no puede retornar un valor`, this.linea, this.columna);
+                        controlador.errores.push(error);
+                        controlador.appEnd(`Error semantico en la linea ${this.linea} en la columna ${this.columna}: El metodo ${this.identificador} no puede retornar un valor`);
+                    }
+                } else {
+                    if (res != null) {
+                        return res
+                    } else {
+                        let error = new errores('Semantico', `El metodo  ${this.simbolo} no puede retornar null`, this.linea, this.columna);
+                        controlador.errores.push(error);
+                        controlador.appEnd(`Error semantico en la linea ${this.linea} en la columna ${this.columna}: El metodo ${this.identificador} no puede null`);
                     }
                 }
             }

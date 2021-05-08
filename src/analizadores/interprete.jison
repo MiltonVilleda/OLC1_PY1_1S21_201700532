@@ -20,7 +20,7 @@ caracter    (\'({escape}|{aceptacion2})*\')
 
 /* Comentarios */
 "//".*              {/* Ignoro los comentarios simples */}
-"/*"[^"*/"]*"*/"        {/* Ignoro comentarios multi linea */}
+"/*"((\*+[^/*])|([^*]))*\**"*/"     {/*Ignorar comentarios con multiples lneas*/}
 
 /* Simbolos del programa */
 "++"                   { console.log("Reconocio : "+ yytext); return 'INCRE'}
@@ -162,7 +162,6 @@ caracter    (\'({escape}|{aceptacion2})*\')
     const length_ = require('../clases/expresiones/length_')
     const switch_ = require('../clases/instrucciones/sentenciasControl/switch_')
     const case_ = require('../clases/instrucciones/sentenciasControl/case_')
-
     const casteo = require('../clases/expresiones/casteo')
     const toarraychar_ = require('../clases/expresiones/toarraychar_')
 %}
@@ -176,10 +175,12 @@ caracter    (\'({escape}|{aceptacion2})*\')
 %right 'NOT'
 %left 'MENORQUE' 'MAYORQUE' 'MENORIGUAL' 'MAYORIGUAL' 'IGUALIGUAL' 'DIFERENTE'
 %left 'MAS' 'MENOS'
-%left 'MULTI' 'DIV'
-%left 'POTENCIA'
+%left 'MULTI' 'DIV' 'MODULO'
+//%left 'POTENCIA'
+%nonassoc 'POTENCIA'
 %right 'UNARIO'
-%left 'MODULO'
+//%left 'MODULO'
+%right 'PARA'
 
 %start inicio
 
@@ -364,8 +365,9 @@ e : e MAS e                     { $$ = new aritmetica.default($1,'+', $3, @1.fir
     | TRUNCATE PARA e PARC      { $$ = new truncate_.default($3,@1.first_line,@1.last_column) }
     | ROUND PARA e PARC         { $$ = new round_.default($3,@1.first_line,@1.last_column) }
     | LENGTH PARA ID PARC       { $$ = new length_.default($3,@1.first_line,@1.last_column) }
-    //CASTEO 
-    | tipo PARA e PARC          { $$ = new casteo.default($1,$3,@1.first_line,@1.last_column) }
+    //CASTEO
+    //| tipo PARA e PARC          { $$ = new casteo.default($1,$3,@1.first_line,@1.last_column) }
+    | PARA tipo PARC e          { $$ = new casteo.default($2,$4,@1.first_line,@1.last_column) }
     | PARA e PARC               { $$ = $2; }
     | LLAVEA lista_exp LLAVEC   { $$ = $2 }
     | TYPEOF PARA e PARC        { $$ = new typeof_.default($3,@1.first_line,@1.last_column) }

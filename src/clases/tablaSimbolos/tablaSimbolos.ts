@@ -37,7 +37,7 @@ export class tablaSimbolos {
     getSimbolo(id: string){
         let ts: tablaSimbolos = this;
         while (ts != null){
-            let existe = ts.tabla.get(id);
+            let existe = ts.tabla.get(id.toLowerCase());
             if (existe != null){
                 return existe;
             }

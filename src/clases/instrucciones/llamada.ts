@@ -26,30 +26,50 @@ export default class llamada implements instruccion, expresion {
         if (ts.existe(this.identificador)) {
             let correcto = true
             let linea, columna, id, val
-            let ts_local = new tablaSimbolos(ts)
             let simbolo_fun = ts.getSimbolo(this.identificador) as funcion
-            if (this.parametros.length == simbolo_fun.lista_param.length) {
-                for (let i = 0; i < this.parametros.length; i++) {
-                    let tipo_base = simbolo_fun.lista_param[i].tipo.type
-                    let tipo_in = this.parametros[i].getTipo(controlador, ts_local)
-                    let valor = this.parametros[i].getValor(controlador, ts_local)
-                    linea = simbolo_fun.lista_param[i].linea
-                    columna = simbolo_fun.lista_param[i].columna
-                    id = simbolo_fun.lista_param[i].identificador
-                    val = valor
-                    if (tipo_base == tipo_in || (tipo_base == tipo.CARACTER && tipo_in == tipo.CADENA && valor.lenght == 1) || (tipo_base == tipo.ENTERO && tipo_in == tipo.DOUBLE && !valor.toString().includes('.'))) {
-                        simbolo_fun.lista_param[i].setValor(this.parametros[i].getValor(controlador, ts_local))
-                    } else {
-                        correcto = false
-                    }
+            let size = this.parametros.length
+            let valores_aux = new Array<any>()
+            let valores_in = new Array<any>()
+            let cadena: string = ""
+            if (this.parametros.length == simbolo_fun.lista_param.length && size > 0) {
+                //GUARDAR VALORES_IN
+                //console.log("VALORES DE ENTRADA")
+                for (let i = 0; i < simbolo_fun.lista_param.length; i++) {
+                    let valor = this.parametros[i].getValor(controlador, ts)
+                    //console.log("VAL["+i+"]="+valor)
+                    valores_in.push(valor)
                 }
             }
+            if (this.parametros.length == simbolo_fun.lista_param.length && size > 0) {
+                //GUARDAR VALORES_AUX
+                for (let i = 0; i < simbolo_fun.lista_param.length; i++) {
+                    valores_aux.push(simbolo_fun.lista_param[i].valor)
+                }
+            }
+            if (this.parametros.length == simbolo_fun.lista_param.length && size > 0) {
+                //GUARDAR DA NUEVOS VALORES
+                for (let i = 0; i < simbolo_fun.lista_param.length; i++) {
+                    simbolo_fun.lista_param[i].setValor(valores_in[i])
+                }
+            }
+            /*if (size > 0) {
+                console.log("PARAMETROS ASIGNADOS")
+                for (let i = 0; i < simbolo_fun.lista_param.length; i++) {
+                    console.log(i + ". " + simbolo_fun.lista_param[i].valor)
+                }
+            }*/
             if (correcto) {
-                let res = simbolo_fun.ejecutar(controlador, ts_local)
+                let res = simbolo_fun.ejecutar(controlador, ts)
+                for (let i = 0; i < size; i++) {
+                    simbolo_fun.lista_param[i].setValor(valores_aux[i])
+                }
                 if (res != null) {
                     return res
                 }
             } else {
+                for (let i = 0; i < this.parametros.length; i++) {
+                    simbolo_fun.lista_param[i].setValor(valores_aux[i])
+                }
                 let error = new errores('Semantico', `La variable ${id} no es compatible con el valor ${val}`, linea, columna);
                 controlador.errores.push(error);
                 controlador.appEnd(`Error semantico en la linea ${linea} en la columna ${columna}: La variable ${id} no es compatible con el valor ${val}`);
@@ -65,30 +85,51 @@ export default class llamada implements instruccion, expresion {
         if (ts.existe(this.identificador)) {
             let correcto = true
             let linea, columna, id, val
-            let ts_local = new tablaSimbolos(ts)
+            //let ts_local = new tablaSimbolos(ts)
             let simbolo_fun = ts.getSimbolo(this.identificador) as funcion
-            if (this.parametros.length == simbolo_fun.lista_param.length) {
-                for (let i = 0; i < this.parametros.length; i++) {
-                    let tipo_base = simbolo_fun.lista_param[i].tipo.type
-                    let tipo_in = this.parametros[i].getTipo(controlador, ts_local)
-                    let valor = this.parametros[i].getValor(controlador, ts_local)
-                    linea = simbolo_fun.lista_param[i].linea
-                    columna = simbolo_fun.lista_param[i].columna
-                    id = simbolo_fun.lista_param[i].identificador
-                    val = valor
-                    if (tipo_base == tipo_in || (tipo_base == tipo.CARACTER && tipo_in == tipo.CADENA && valor.lenght == 1) || (tipo_base == tipo.ENTERO && tipo_in == tipo.DOUBLE && !valor.toString().includes('.'))) {
-                        simbolo_fun.lista_param[i].setValor(this.parametros[i].getValor(controlador, ts_local))
-                    } else {
-                        correcto = false
-                    }
+            let size = this.parametros.length
+            let valores_aux = new Array<any>()
+            let valores_in = new Array<any>()
+            let cadena: string = ""
+            if (this.parametros.length == simbolo_fun.lista_param.length && size > 0) {
+                //GUARDAR VALORES_IN
+                console.log("VALORES DE ENTRADA")
+                for (let i = 0; i < simbolo_fun.lista_param.length; i++) {
+                    let valor = this.parametros[i].getValor(controlador, ts)
+                    console.log("VAL["+i+"]="+valor)
+                    valores_in.push(valor)
+                }
+            }
+            if (this.parametros.length == simbolo_fun.lista_param.length && size > 0) {
+                //GUARDAR VALORES_AUX
+                for (let i = 0; i < simbolo_fun.lista_param.length; i++) {
+                    valores_aux.push(simbolo_fun.lista_param[i].valor)
+                }
+            }
+            if (this.parametros.length == simbolo_fun.lista_param.length && size > 0) {
+                //GUARDAR DA NUEVOS VALORES
+                for (let i = 0; i < simbolo_fun.lista_param.length; i++) {
+                    simbolo_fun.lista_param[i].setValor(valores_in[i])
+                }
+            }
+            if (size > 0) {
+                console.log("PARAMETROS ASIGNADOS")
+                for (let i = 0; i < simbolo_fun.lista_param.length; i++) {
+                    console.log(i + ". " + simbolo_fun.lista_param[i].valor)
                 }
             }
             if (correcto) {
-                let res = simbolo_fun.ejecutar(controlador, ts_local)
+                let res = simbolo_fun.ejecutar(controlador, ts)
+                for (let i = 0; i < size; i++) {
+                    simbolo_fun.lista_param[i].setValor(valores_aux[i])
+                }
                 if (res != null) {
                     return res
                 }
             } else {
+                for (let i = 0; i < this.parametros.length; i++) {
+                    simbolo_fun.lista_param[i].setValor(valores_aux[i])
+                }
                 let error = new errores('Semantico', `La variable ${id} no es compatible con el valor ${val}`, linea, columna);
                 controlador.errores.push(error);
                 controlador.appEnd(`Error semantico en la linea ${linea} en la columna ${columna}: La variable ${id} no es compatible con el valor ${val}`);
@@ -105,8 +146,8 @@ export default class llamada implements instruccion, expresion {
         padre.addHijo(new nodo(this.identificador, ""))
         padre.addHijo(new nodo("(", ""))
         if (this.parametros.length > 0) {
-            let hijo = new nodo("Parametros","")
-            for (let i = 0; i<this.parametros.length; i++){
+            let hijo = new nodo("Parametros", "")
+            for (let i = 0; i < this.parametros.length; i++) {
                 hijo.addHijo(this.parametros[i].recorrer())
             }
             padre.addHijo(hijo)

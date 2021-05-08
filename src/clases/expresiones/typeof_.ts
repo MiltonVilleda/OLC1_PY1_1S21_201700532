@@ -20,10 +20,12 @@ export default class typeof_ implements expresion {
     }
     getValor(controlador: controlador, ts: tablaSimbolos) {
         let valor = this.expresion.getValor(controlador, ts)
-        if (this.expresion.getTipo(controlador, ts) == tipo.DOUBLE && !valor.toString().includes('.')) {
+        if (this.expresion.getTipo(controlador, ts) == tipo.DOUBLE && !valor.toString().includes('.') || this.expresion.getTipo(controlador, ts) == tipo.ENTERO) {
             return "int"
         } else if (this.expresion.getTipo(controlador, ts) == tipo.DOUBLE) {
             return "double"
+        } else if (this.expresion.getTipo(controlador, ts) == tipo.BOOLEANO) {
+            return "boolean"
         } else if (this.expresion.getTipo(controlador, ts) == tipo.CARACTER) {
             return "char"
         } else if (this.expresion.getTipo(controlador, ts) == tipo.CADENA) {
