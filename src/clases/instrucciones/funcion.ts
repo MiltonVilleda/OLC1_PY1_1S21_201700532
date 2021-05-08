@@ -18,6 +18,7 @@ export default class funcion extends simbolos implements instruccion {
     }
     ejecutar(controlador: controlador, ts: tablaSimbolos) {
         let ts_local = new tablaSimbolos(ts)
+        ts_local.nombre = this.identificador
         if (this.lista_param.length > 0) {
             for (let param of this.lista_param) {
                 ts_local.agregar(param.identificador, param)

@@ -24,6 +24,7 @@ export default class if_ implements instruccion {
     }
     ejecutar(controlador: controlador, ts: tablaSimbolos) {
         let ts_local = new tablaSimbolos(ts)
+        ts_local.nombre = ts.nombre+"/if"
         let valor_condicion = this.condicion.getValor(controlador, ts)
         if (this.condicion.getTipo(controlador, ts) == tipo.BOOLEANO) {
             if (valor_condicion) {

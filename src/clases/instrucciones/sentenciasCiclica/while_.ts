@@ -24,6 +24,7 @@ export default class while_ implements instruccion {
             siguiente:
             while (this.condicion.getValor(controlador, ts)) {
                 let ts_local = new tablaSimbolos(ts)
+                ts_local.nombre = ts.nombre+"/while"
                 for (let instruccion of this.lista_instrucciones) {
                     let res = instruccion.ejecutar(controlador, ts_local)
                     // TODO verificar si res es de tipo continue, break, return

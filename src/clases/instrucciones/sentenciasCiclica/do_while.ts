@@ -25,6 +25,7 @@ export default class do_while implements instruccion {
             siguiente:
             do {
                 let ts_local = new tablaSimbolos(ts)
+                ts_local.nombre = ts.nombre+"/doWhile"
                 for (let instruccion of this.lista_instrucciones) {
                     let res = instruccion.ejecutar(controlador, ts_local)
                     // TODO verificar si res es de tipo continue, break, return

@@ -23,12 +23,14 @@ export default class for_ implements instruccion {
     }
     ejecutar(controlador: controlador, ts: tablaSimbolos) {
         let ts_aux = new tablaSimbolos(ts)
+        ts_aux.nombre = ts.nombre
         this.asig_dec.ejecutar(controlador, ts_aux)
         let val_condicion = this.condicion.getValor(controlador, ts_aux)
         if (typeof val_condicion === 'boolean') {
             siguiente:
             while (this.condicion.getValor(controlador, ts_aux)) {
                 let ts_local = new tablaSimbolos(ts_aux)
+                ts_local.nombre = ts_aux.nombre+"/for"
                 for (let instruccion of this.lista_instrucciones) {
                     let res = instruccion.ejecutar(controlador, ts_local)
                     if (instruccion instanceof break_ || res instanceof break_) {
