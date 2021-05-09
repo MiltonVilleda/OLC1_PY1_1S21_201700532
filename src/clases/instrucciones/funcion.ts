@@ -26,25 +26,29 @@ export default class funcion extends simbolos implements instruccion {
         }
         //console.log(this.lista_instrucciones)
         for (let instruccion of this.lista_instrucciones) {
-            let res = instruccion.ejecutar(controlador, ts_local)
-            if (instruccion instanceof return_ || res != null) {
-                if (this.metodo) {
-                    if (res == null) {
-                        return null
+            try {
+                let res = instruccion.ejecutar(controlador, ts_local)
+                if (instruccion instanceof return_ || res != null) {
+                    if (this.metodo) {
+                        if (res == null) {
+                            return null
+                        } else {
+                            let error = new errores('Semantico', `El metodo  ${this.simbolo} no puede retornar un valor`, this.linea, this.columna);
+                            controlador.errores.push(error);
+                            controlador.appEnd(`Error semantico en la linea ${this.linea} en la columna ${this.columna}: El metodo ${this.identificador} no puede retornar un valor`);
+                        }
                     } else {
-                        let error = new errores('Semantico', `El metodo  ${this.simbolo} no puede retornar un valor`, this.linea, this.columna);
-                        controlador.errores.push(error);
-                        controlador.appEnd(`Error semantico en la linea ${this.linea} en la columna ${this.columna}: El metodo ${this.identificador} no puede retornar un valor`);
-                    }
-                } else {
-                    if (res != null) {
-                        return res
-                    } else {
-                        let error = new errores('Semantico', `El metodo  ${this.simbolo} no puede retornar null`, this.linea, this.columna);
-                        controlador.errores.push(error);
-                        controlador.appEnd(`Error semantico en la linea ${this.linea} en la columna ${this.columna}: El metodo ${this.identificador} no puede null`);
+                        if (res != null) {
+                            return res
+                        } else {
+                            let error = new errores('Semantico', `El metodo  ${this.simbolo} no puede retornar null`, this.linea, this.columna);
+                            controlador.errores.push(error);
+                            controlador.appEnd(`Error semantico en la linea ${this.linea} en la columna ${this.columna}: El metodo ${this.identificador} no puede null`);
+                        }
                     }
                 }
+            } catch (error) {
+                //
             }
         }
         return null
@@ -74,7 +78,11 @@ export default class funcion extends simbolos implements instruccion {
         padre.addHijo(new nodo("{", ""))
         let hijo = new nodo("instrucciones", "")
         for (let intstruccion of this.lista_instrucciones) {
-            hijo.addHijo(intstruccion.recorrer())
+            try {
+                hijo.addHijo(intstruccion.recorrer())
+            } catch (error) {
+                //hijo.addHijo(new nodo("Error Sintactico",""))
+            }
         }
         padre.addHijo(hijo)
         padre.addHijo(new nodo("}", ""))

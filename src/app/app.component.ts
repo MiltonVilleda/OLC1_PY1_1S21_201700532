@@ -8,6 +8,7 @@ import { graphviz } from "d3-graphviz";
 import { wasmFolder } from "@hpcc-js/wasm";
 import nodo from 'src/clases/ast/nodo';
 import pestana from 'src/clases/pestana';
+import { errores2 } from "../analizadores/base";
 
 @Component({
   selector: 'app-root',
@@ -20,25 +21,44 @@ export class AppComponent {
   consola: string = "";
   tabla_map: Map<string, simbolos>
   tabla2: Array<simbolo>
-  errores2: Array<errores>
+  errors = errores2
   contador: number = 0
   vent_focus: string ="pestana1"
   nombre: string = ""
   lista_p = new Array<pestana>()
   file_: File
-
+  estado: string = ""
   ejecutar(): void {
     this.tabla2 = new Array<simbolo>()
-    this.errores2 = new Array<errores>()
     let ana = new analizador.analizador();
     this.consola = ""
     if (this.contenido != "") {
       let ejecutar = ana.ejecutar(this.contenido);
       this.consola = ejecutar.consola;
       this.tabla2 = ejecutar.ts
-      this.errores2 = ejecutar.errores
+      this.errors = ejecutar.errores
+      //let size = errores2.length
+      //console.log("# errores: "+size)
+      for (let err of errores2){
+        this.errors.push(err)
+      }
     }
     this.recorrer()
+    /*console.log("LOCAL ERRORS")
+    console.log(this.errors)
+    console.log("--------------------------------")
+    console.log("IMPORT ERRORS")
+    console.log(errores2)
+    console.log("--------------------------------")*/
+    try {
+      if (this.errors.length > 0){
+        this.estado = "Hay errores en el archivo"
+      } else {
+        this.estado = "Archivo correcto"
+      }
+    } catch (error) {
+      this.estado = "Error fatal"
+    }
     /*
     let ts = new tablaSimbolos(null);
     let cont = new controlador();
@@ -66,6 +86,7 @@ export class AppComponent {
       graphviz('#grafico').renderDot(grafo)
     }
   }
+  msg
   getText(input: HTMLInputElement){
     var files = input.files
     var x: File = files[0]

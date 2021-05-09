@@ -108,8 +108,9 @@ caracter    (\'({escape}|{aceptacion2})*\')
 <<EOF>>               return 'EOF'
 
 /* Errores lexicos */
-.                     { console.log("Error con: " + yytext)
-                        new errores.default("Error lexico",`El caracter ${yytext} no pertence al lenguaje`,yylineno+1,yylloc.last_column+1)
+.                     { console.log("Error lexico: " + yytext)
+                        errors.errores2.push(new errores.default("Error lexico",`El caracter ${yytext} no pertence al lenguaje`,yylineno+1,yylloc.last_column+1))
+                        //console.log(errors.errores2)
                         }
 
 /lex
@@ -164,6 +165,8 @@ caracter    (\'({escape}|{aceptacion2})*\')
     const case_ = require('../clases/instrucciones/sentenciasControl/case_')
     const casteo = require('../clases/expresiones/casteo')
     const toarraychar_ = require('../clases/expresiones/toarraychar_')
+
+    let errors = require('./base')
 %}
 
 /* Precedencia de operadores */
@@ -213,8 +216,11 @@ instruccion : declaracion       { $$ = $1; }
             | CONTINUE PYC      { $$ = new continue_.default() }
             | RETURN PYC        { $$ = new return_.default(null) }
             | RETURN e PYC      { $$ = new return_.default($2) }
-            | error             { console.log("Error con: " + yytext)
-                                new errores.default("Error sintactico",`${yytext} genera conflicto`,this._$.first_line,this._$.first_column)
+            | error LLAVEC      { console.log("Recuperacion error: " + yytext)
+                                errors.errores2.push(new errores.default("Error sintactico",` Recuperacion con ${yytext} en la linea ${this._$.first_line} columna ${this._$.first_column}`,this._$.first_line,this._$.first_column))
+                                }
+            | error PYC         { console.log("Recuperacion error: " + yytext)
+                                errors.errores2.push(new errores.default("Error sintactico",` Recuperacion con ${yytext} en la linea ${this._$.first_line} columna ${this._$.first_column}`,this._$.first_line,this._$.first_column))
                                 }
             ;
 

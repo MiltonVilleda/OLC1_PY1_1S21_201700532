@@ -1,14 +1,15 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-  <button (click)="ejecutar()" type="button" class="btn btn-link text-light">Analizar</button>
-  <button (click)="ejecutar()" type="button" class="btn btn-link text-light">Tabla de simbolos</button>
-  <button (click)="ejecutar()" type="button" class="btn btn-link text-light">AST</button>
-  <button (click)="ejecutar()" type="button" class="btn btn-link text-light">Errores</button>
+  <!--Boton-->
+  <button type="button" (click)="ejecutar()" class="btn btn-link text-light" data-bs-toggle="modal"
+    data-bs-target="#ModalT" data-bs-whatever="@mdo">Analizar</button>
 </nav>
 
 <div class="container">
+  <!--
   <div class="row mt-3">
     <div class="col-12">
-      <input id="fileInput" title="Abrir" type="file" size="50" (change)="openFile($event.target)" class="btn btn-secundary" [(ngModel)]="file_">
+      <input id="fileInput" title="Abrir" type="file" size="50" (change)="openFile($event.target)"
+        class="btn btn-secundary" [(ngModel)]="file_">
       <button onclick="DescargarArchivo();" id="guardar" title="Guardar" class="btn btn-primary"
         type="button">Guardar</button>
       <button onclick="agregar();" title="AgregarPestana" id="btn4" class="btn btn-primary" type="button">Agregar
@@ -17,40 +18,34 @@
         Pestana</button>
     </div>
   </div>
+  -->
   <div class="row mt-3">
-    <div class="col-sm-12 col-lg-6">
-      <div class="row">
-        <div class="col-12">
-          <h1>Entrada</h1>
-        </div>
-        <!--
+    <div class="col-12">
+      <h1>Entrada</h1>
+    </div>
+    <div class="col-12">
+      <ngx-codemirror id="xxx" [(ngModel)]="contenido" [options]="{
+          lineNumbers: true,
+          theme: 'the-matrix',
+          mode: 'markdown'
+          }">
+      </ngx-codemirror>
+    </div>
+    <!--
         <select class="form-control" id="selectTest" name="selectTest" [(ngModel)]="p" (change)="cambioTest(test)">
           <option [value]="test.id_test" *ngFor="let test of tests">{{p.nombre}}</option>
         </select>
         -->
-        <div class="col-12">
-          
-          <ngx-codemirror id="xxx" [(ngModel)]="contenido" [options]="{
-    lineNumbers: true,
-    theme: 'the-matrix',
-    mode: 'markdown'
-  }"></ngx-codemirror>
-        </div>
-      </div>
+    <div class="col-12">
+      <h1>Consola</h1>
     </div>
-    <div class="col-sm-12 col-lg-6">
-      <div class="row">
-        <div class="col-12">
-          <h1>Consola</h1>
-        </div>
-        <div class="col-12">
-          <ngx-codemirror [(ngModel)]="consola" [options]="{
+    <div class="col-12">
+      <ngx-codemirror [(ngModel)]="consola" [options]="{
             lineNumbers: true,
             theme: 'the-matrix',
             mode: 'markdown'
-          }"></ngx-codemirror>
-        </div>
-      </div>
+            }">
+      </ngx-codemirror>
     </div>
   </div>
   <div class="row mt-3">
@@ -98,7 +93,7 @@
             <td>Columna</td>
           </tr>
         </thead>
-        <tbody *ngFor="let err of errores2">
+        <tbody *ngFor="let err of errors">
           <tr class="bg-light">
             <td>{{err.tipo}}</td>
             <td>{{err.descripcion}}</td>
@@ -117,6 +112,50 @@
       <div id="ast" class="tabcontent">
         <!--style="background-color: #"-->
         <div class="overflow-aout" id="grafico" style="text-align: center;"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--Modal-->
+<div class="modal fade" id="ModalF" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Ejecucion</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-12">Resultado: {{estado}}</div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--Modal-->
+<div class="modal fade" id="ModalT" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Ejecucion</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-12">Resultado de la ejecucion: {{estado}}</div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
       </div>
     </div>
   </div>

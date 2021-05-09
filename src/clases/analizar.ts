@@ -1,7 +1,5 @@
 //import * as sintactico from '../analizadores/gramatica';
-import { ControlContainer } from '@angular/forms';
-import * as interprete from '../analizadores/interprete';
-import nodo from './ast/nodo';
+import interprete from '../analizadores/interprete';
 import controlador from './controlador';
 import primitivo from './expresiones/primitivo';
 import { simbolo } from './interfaces/simbolo';
@@ -21,6 +19,8 @@ export class analizador {
             let tabla_array: Array<simbolo> = new Array<simbolo>()
             let arreglo = this.getSimbolos(ts_global, tabla_array, arr_nombres)
             console.log(arr_nombres)
+            console.log("Errores")
+            console.log(controlador_.errores)
             let retorno = { "errores": controlador_.errores, "consola": controlador_.consola, "ts": arreglo }
             return retorno;
         } catch (error) {
@@ -83,9 +83,6 @@ export class analizador {
                         }
                         valor = cadena
                     }
-                    /*let split_name = ts.nombre.split("/", -1)
-                    let size = split_name.length
-                    entorno = split_name[size - 1]*/
                     entorno = ts.nombre
                     linea = ts.getSimbolo(clave).linea
                     columna = ts.getSimbolo(clave).columna
