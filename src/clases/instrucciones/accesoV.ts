@@ -30,7 +30,7 @@ export default class accesoV implements expresion {
         let valor = this.exp.getValor(controlador, ts)
         let tipo_Val = this.exp.getTipo(controlador, ts)
         if (simbol.tipo.type == tipo.VECTOR_BOOLEAN || simbol.tipo.type == tipo.VECTOR_CHAR || simbol.tipo.type == tipo.VECTOR_DOUBLE || simbol.tipo.type == tipo.VECTOR_INT || simbol.tipo.type == tipo.VECTOR_STRING) {
-            if (tipo_Val == tipo.DOUBLE && !tipo_Val.toString().includes('.')) {
+            if ((tipo_Val == tipo.DOUBLE || tipo_Val == tipo.ENTERO) && !tipo_Val.toString().includes('.')) {
                 if (valor < simbol.valor.length) {
                     return simbol.valor[valor].getValor(controlador, ts)
                 } else {
