@@ -16,14 +16,13 @@ import { errores2 } from "../analizadores/base";
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-
   contenido: string = "";
   consola: string = "";
   tabla_map: Map<string, simbolos>
   tabla2: Array<simbolo>
   errors = errores2
   contador: number = 0
-  vent_focus: string ="pestana1"
+  vent_focus: string = "pestana1"
   nombre: string = ""
   lista_p = new Array<pestana>()
   file_: File
@@ -39,7 +38,7 @@ export class AppComponent {
       this.errors = ejecutar.errores
       //let size = errores2.length
       //console.log("# errores: "+size)
-      for (let err of errores2){
+      for (let err of errores2) {
         this.errors.push(err)
       }
     }
@@ -51,7 +50,7 @@ export class AppComponent {
     console.log(errores2)
     console.log("--------------------------------")*/
     try {
-      if (this.errors.length > 0){
+      if (this.errors.length > 0) {
         this.estado = "Hay errores en el archivo"
       } else {
         this.estado = "Archivo correcto"
@@ -87,7 +86,7 @@ export class AppComponent {
     }
   }
   msg
-  getText(input: HTMLInputElement){
+  getText(input: HTMLInputElement) {
     var files = input.files
     var x: File = files[0]
     var fr = new FileReader()
@@ -100,7 +99,7 @@ export class AppComponent {
       console.log(e.target.result)
     }
   }
-  openFile(input: HTMLInputElement){
+  openFile(input: HTMLInputElement) {
     var files = input.files
     var x: File = files[0]
     //let y = readFile(x.name)
@@ -116,33 +115,57 @@ export class AppComponent {
     }
     fr.readAsText(x)
   }
-  cambioP(nombre){
-    for (var i = 0; i < this.lista_p.length; i++){
-      if (this.lista_p[i].nombre == nombre){
-        this.contenido =  this.lista_p[i].cadena
+  cambioP(nombre) {
+    for (var i = 0; i < this.lista_p.length; i++) {
+      if (this.lista_p[i].nombre == nombre) {
+        this.contenido = this.lista_p[i].cadena
       }
     }
   }
-  getContador(){
+  getContador() {
     return this.contador++
   }
-  set_vent(vent){
-    this.vent_focus=vent;
+  set_vent(vent) {
+    this.vent_focus = vent;
   }
-  getVent(){
+  getVent() {
     return this.vent_focus
   }
-  linkedList(pestana,nombre){
-    var obj = new pestana(pestana,nombre)
+  linkedList(pestana, nombre) {
+    var obj = new pestana(pestana, nombre)
     obj.pestana = pestana
     obj.nombre = nombre
     this.lista_p.push(obj)
   }
-  delete_tape(pestana){
+  delete_tape(pestana) {
     /*for (var i = 0; i < this.lista_p.length; i++){
       if (this.lista_p[i].pestana == pestana){
         delete this.lista_p[i]
       }
     }*/
   }
+
 }
+
+function abrirArchivo(evento) {
+  let archivo = evento.target.files[0]
+  if (archivo) {
+    let reader = new FileReader()
+    reader.onload = function(e){
+      let contenido = e.target.result
+      console.log(archivo.name)
+      console.log(contenido)
+      document.getElementById('contenido').innerText = ''+contenido
+    }
+    reader.readAsText(archivo)
+  } else {
+    document.getElementById('contenido').innerText = 'No hay archivo'
+  }
+}
+
+window.addEventListener('load', ()=>{
+  document.getElementById('file-input').addEventListener('change',abrirArchivo)
+})
+/*
+document.getElementById('file-input').addEventListener('change', leerArchivo, false);
+*/
